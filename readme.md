@@ -94,3 +94,10 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     },
 
 21. 다크 모드를 위해 토큰과 같이 다크모드 누를때 localstorage에 저장해준다
+
+22. function Avatar({ url = null, lg = false }) 이건.. url에 null을 default로 넣어주겠단 뜻임!
+    또한 Avatar에서 lg없으면 false있으면 true임
+
+23. min-width: 100%; 를 통해서 이미지 가로길이 들쑥날쑥한걸 최대로 맞춰줄것임
+    min-width: 100% 를 하고도 사진이 Nico 선생님 처럼 안되신분 계신가요?
+    그러시면 min-width -> width: 100% 변경하시면 됩니다.

@@ -9,6 +9,7 @@ import { darkTheme, GlobalStyles, lightTheme } from "./styles";
 import SignUp from "./screens/SignUp";
 import routes from "./routes";
 import { HelmetProvider } from "react-helmet-async";
+import Layout from "./components/Layout";
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -24,7 +25,13 @@ function App() {
             <Switch>
               {/* 스위치 안넣으면 겹치는 url이 생긴다  그리고 스위치는 하나의 route만 render해줌*/}
               <Route path={routes.home} exact>
-                {isLoggedIn ? <Home /> : <Login />}
+                {isLoggedIn ? (
+                  <Layout>
+                    <Home />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
               </Route>
               {!isLoggedIn ? (
                 <Route path={routes.signUp}>

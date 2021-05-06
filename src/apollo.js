@@ -1,4 +1,10 @@
-import { ApolloClient, InMemoryCache, makeVar } from "@apollo/client";
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+  makeVar,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
 const TOKEN = "TOKEN";
 const DARK_MODE = "DARK_MODE";
@@ -31,7 +37,22 @@ export const disableDarkMode = () => {
   darkModeVar(false);
 };
 
-export const client = new ApolloClient({
+const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
+});
+
+//http req 헤더에 토큰을 보내기위한 작업을 해줘야한다!
+//doc에 적혀있음 이렇게 해라고
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      token: localStorage.getItem(TOKEN),
+    },
+  };
+});
+
+export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
