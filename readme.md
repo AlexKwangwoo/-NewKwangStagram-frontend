@@ -118,7 +118,7 @@ export default Login; <-위에랑 이거는 똑같은 형식임
        cache.writeFragment를 통해 기존결과에 +1 -1 또는 !isLiked를 실행해 반대값만 보여주면된다
        어짜피 새로고침하면 새로운 데이터가 쓰여질것임.! read안하고 바로 있는것에서 write해도되긴함..
 
-    3. modify 로 더쉽게 만들었음!!
+    3. modify 로 더쉽게 만들었음!! modify는 필드싹다 적을필요없고 필요한 부분만 골라서 함수와prev만이용하면됨!!
 
 25. npm i sanitize-html
     댓글작성시 html형식으로 된 댓글을 이미지나..나쁜걸로 못넣게 막아준다!
@@ -148,3 +148,25 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     이유는 apollo.js 에서 cache에서 user정의를 따로 해줘야한다! User:1 User:2 처럼 나와줘야하는데..
     (id가 없으면 apollo는 유저를 찾지못함.. .그래서 seeProfile에서 id를 넣어줘야함! 아니면 위에처럼
     apollo.js에 추가해줘야함) apollo.js 에서 캐쉬 부분 확인할것!
+
+31. Button은 styled.input 으로 만들어서 profile에서 follow unfollow editprofile에서 children을 못가진다
+    그럴때 방법은??
+    styled(Button).attrs({
+    as: "span",
+    })` 이런식으로 span 기능도 한다고 알려주면됨!
+
+32. unfollow했을때 seeFeed를 새로 불러와야한다. 그떄 refetch 사용가능하다 12.5참고
+    두번이나하게된다.. me 하나랑 다른유저의 프로필 갱신을 위해..
+    그래서 그냥 캐쉬 업데이트 할까함..
+    const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
+    variables: {
+    username,
+    },
+    });
+    // refetchQueries: [{ query: SEE_PROFILE_QUERY, variables: { username } }],
+    // 리페치 방법
+
+33. mutation에서 update는 (cache, result)를 주고 onComplete는 (data)만 주는데..
+    update는 우리가 like comment 했던데로 하면되고 onComplete는 apolloClient 가지고와서
+    캐쉬를 뽑아서 modify 시키면된다!
+    캐쉬에서 조금이라도 객체가 바뀌면 리액트가 즉각 리 랜더를 한다!

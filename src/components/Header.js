@@ -55,14 +55,18 @@ function Header() {
     <SHeader>
       <Wrapper>
         <Column>
-          <FontAwesomeIcon icon={faInstagram} size="2x" />
+          <Link to={"/"}>
+            <FontAwesomeIcon icon={faInstagram} size="2x" />
+          </Link>
         </Column>
         <Column>
           {isLoggedIn ? (
             <IconsContainer>
-              <Icon>
-                <FontAwesomeIcon icon={faHome} size="lg" />
-              </Icon>
+              <Link to={"/"}>
+                <Icon>
+                  <FontAwesomeIcon icon={faHome} size="lg" />
+                </Icon>
+              </Link>
               <Icon>
                 <FontAwesomeIcon icon={faCompass} size="lg" />
               </Icon>

@@ -40,7 +40,9 @@ function App() {
                 </Route>
               ) : null}
               <Route path={`/users/:username`}>
-                <Profile />
+                <Layout>
+                  <Profile />
+                </Layout>
               </Route>
               <Route>
                 {/* 위에서 맞는게 없이면 NotFound가 실행될것임 마지막에 넣어주는것이 중요함..*/}
