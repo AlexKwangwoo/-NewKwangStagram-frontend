@@ -50,7 +50,9 @@ export default Login; <-위에랑 이거는 똑같은 형식임
 
 13. react hook form쓰기위해서는 name이 필수이다..
 
-14. <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}> 은 우리가 입력한거의 제출이
+14. handleSubmit 는 첫번쨰인자는 유효한값.. 두번째값은 유효하지 않는값이 넘어올때 일어남 변수명은 아무
+    거나 괜찮음!!
+    <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}> 은 우리가 입력한거의 제출이
     유효한지 아닌지 검사한다! 유효하면 onSubmitValid 를 얻을 것이고, 유효안하면 onSubmitInvalid 을 얻을것임
      ref={register({
               required: "Username is required", <-여기가 메시지 또는 true가 될수이씀
@@ -101,3 +103,48 @@ export default Login; <-위에랑 이거는 똑같은 형식임
 23. min-width: 100%; 를 통해서 이미지 가로길이 들쑥날쑥한걸 최대로 맞춰줄것임
     min-width: 100% 를 하고도 사진이 Nico 선생님 처럼 안되신분 계신가요?
     그러시면 min-width -> width: 100% 변경하시면 됩니다.
+
+24. like 버튼눌러도 안바뀜 방법 두개임.. (아폴로캐쉬 업데이트)
+
+    1. refetch를 통해 쿼리를 다시 실행시킴 query를 한번더 다시 호출하면 query를 다시 fetch함
+       변한내용이 있다면 apollo가 캐쉬를 업데이트할것임
+       state로 like 상태 바꿀수있지만 아폴로캐쉬에 저장된 내용을 바꿔 liked를 바꿔봄 refetchQueries
+       를통해 캐쉬 안건들고 바로 뮤테이션을 실행시킴.. 즉 toogleLike 누르면 연속으로 seeFeed쿼리를 바로 다시 실행시키게 가능 //하지만 모든 feed를 다 리셋해서 보여주는건 좋은 생각이 아님..
+
+    2. (백앤드 내용안가져오고.. 왜냐면 기다려야하니깐.. 캐쉬이용해서 결과를 미리 예상해서 보여줌)
+       두번째 방법은 fragments를 이용하는것 +update 는 백앤드에서 받은 데이터를 주는 fuction임
+       아폴로 캐쉬에 직접 link해줌. / fragment를 write하는건 캐쉬에서 내가 원하는 특정 일부분의 object를
+       수정하는것임.. 일단 먼저 cache.readFragment이용해 기존 캐쉬내용을 result에 저장하고
+       cache.writeFragment를 통해 기존결과에 +1 -1 또는 !isLiked를 실행해 반대값만 보여주면된다
+       어짜피 새로고침하면 새로운 데이터가 쓰여질것임.! read안하고 바로 있는것에서 write해도되긴함..
+
+    3. modify 로 더쉽게 만들었음!!
+
+25. npm i sanitize-html
+    댓글작성시 html형식으로 된 댓글을 이미지나..나쁜걸로 못넣게 막아준다!
+    comment부분가보면암.. 문제는 링크를 못만들어주게되서 폐지
+
+26. <></> 이거랑 <React.Fragment>랑 똑같은데 React.Fragment는 우리가 키 나 프롭등을 추가할수있따
+
+27. React.~ 안쓸때는 react-create-app 에서 자동으로 해주기에 import할필요가 없다!
+
+28. 아폴로캐쉬 코맨트는 COMMENT가서 보면됨.. 단 photo에 들어가면 comments가 있는데
+    여기를 추가할때 comment 모든 속성을 추가해야하는데 photo -> comments -> 0: 가면 ref로 comment:1
+    이런식으로 가리키고있음 그래서 다시 comment:1누르면 6개 파일 형식이 있는데 그걸 캐쉬에 똑같이 써줘야함
+    문제가 생겼음./. 아폴로 캐쉬에 comment추가해주면.. comment:1 이런식으로 만들어져야하는데
+    MutationResponse:10 이런식으로 나오고있음 그래서 cache.write를 통해 comment:10 처럼 우리가 같이
+    추가 해주면 됨!! 그러면 photo:1의 comments에 배열이 하나더 생기고 + \_ref:comment:10도 생기고
+    캐쉬에도 comment:10 같은 친구가 생기면서나중에!!!! delete를 위해서!! 활용할수가 있음!
+    왜냐하면 캐쉬에도 생겨야 우리가 지울수있는데 comment:10이 없음!!
+    그래서 최종적으로!!!!!!!!!
+    write를통해 comment:10을 생성도 해주고. modify를 통해 photo의 comments 배열에 \_\_ref:comment10을
+    추가해주는것임!! //마치 second데이터베이스 만지는 느낌.. 화면에 바로 보여주기위해! 새로고침하면
+    어짜피 본디비에서 가져올꺼니깐
+
+29. useParam 사용하기위해 app.js <Route path={`/users/:username`}>
+    을 추가했음! 프로필에서 const { username } = useParams(); 이렇게 사용가능
+
+30. 아폴로 캐쉬에서 다른 유저를 데리고 왔는데 저장을 못하고 root에만 하고있다..
+    이유는 apollo.js 에서 cache에서 user정의를 따로 해줘야한다! User:1 User:2 처럼 나와줘야하는데..
+    (id가 없으면 apollo는 유저를 찾지못함.. .그래서 seeProfile에서 id를 넣어줘야함! 아니면 위에처럼
+    apollo.js에 추가해줘야함) apollo.js 에서 캐쉬 부분 확인할것!

@@ -13,6 +13,7 @@ const ME_QUERY = gql`
 `;
 
 function useUser() {
+  //me에 대한 데이터를 준다.. 토큰이 있을시에!!
   const hasToken = useReactiveVar(isLoggedInVar);
   const { data } = useQuery(ME_QUERY, {
     skip: !hasToken,

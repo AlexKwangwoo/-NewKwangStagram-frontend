@@ -28,7 +28,7 @@ function Avatar({ url = null, lg = false }) {
           <Img src={url} />
         </SAvatar>
       ) : (
-        <FontAwesomeIcon icon={faUser} size={lg} />
+        <FontAwesomeIcon icon={faUser} size={"lg"} />
       )}
     </>
   );

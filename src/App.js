@@ -10,6 +10,7 @@ import SignUp from "./screens/SignUp";
 import routes from "./routes";
 import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/Layout";
+import Profile from "./screens/Profile";
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -38,6 +39,9 @@ function App() {
                   <SignUp />
                 </Route>
               ) : null}
+              <Route path={`/users/:username`}>
+                <Profile />
+              </Route>
               <Route>
                 {/* 위에서 맞는게 없이면 NotFound가 실행될것임 마지막에 넣어주는것이 중요함..*/}
                 {/* 이것도 아니고 저것도 아닐때 여기로 오기때문 */}
