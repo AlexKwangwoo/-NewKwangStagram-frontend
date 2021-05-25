@@ -170,3 +170,14 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     update는 우리가 like comment 했던데로 하면되고 onComplete는 apolloClient 가지고와서
     캐쉬를 뽑아서 modify 시키면된다!
     캐쉬에서 조금이라도 객체가 바뀌면 리액트가 즉각 리 랜더를 한다!
+
+34. 배포!! 매우쉽다
+    - 넬리파이가서 새로운앱 만든다
+    - Build Command는 CI= npm run build 이여야한다 넷리파이 어플만들때!!
+    - publish directory 는 build/ 로 바꿔준다!
+    - 환경변수 설정을해줘야한다!
+      아폴로js 가서 uri:
+      process.env.NODE_ENV === "production"
+      ? "https://newkwangstagram-backend.herokuapp.com/graphql"
+      : "http://localhost:4000/graphql",설정 해주면 됨!! 디비 뭐쓸껀지
+    - 배포가 되고.. 사인업 가서 새로고침하면 페이지 에러가 뜬다!

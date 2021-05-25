@@ -4,8 +4,8 @@ import PageTitle from "../components/PageTitle";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
 
 const FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($offset: Int!) {
+    seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
         username
@@ -24,7 +24,11 @@ const FEED_QUERY = gql`
 `;
 
 function Home() {
-  const { data } = useQuery(FEED_QUERY);
+  const { data } = useQuery(FEED_QUERY, {
+    variables: {
+      offset: 0,
+    },
+  });
 
   return (
     <div>

@@ -101,6 +101,7 @@ function Comments({ photoId, author, caption, commentNumber, comments }) {
         id: `Photo:${photoId}`,
         fields: {
           comments(prev) {
+            console.log("prev", prev);
             return [...prev, newCacheComment];
             //newCacheComment console.log하면 __ref:comment10 이렇게나오는걸 추가하는것임
           },

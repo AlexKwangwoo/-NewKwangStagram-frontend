@@ -38,7 +38,10 @@ export const disableDarkMode = () => {
 };
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://newkwangstagram-backend.herokuapp.com/graphql"
+      : "http://localhost:4000/graphql",
 });
 
 //http req 헤더에 토큰을 보내기위한 작업을 해줘야한다!
