@@ -17,6 +17,10 @@ import FormError from "../components/auth/FormError";
 import { gql, useMutation } from "@apollo/client";
 import { logUserIn } from "../apollo";
 import { useLocation } from "react-router-dom";
+import leftImg from "../asset/loginImg.PNG";
+import letter from "../asset/letterB.png";
+import apple from "../asset/appleLogo.png";
+import google from "../asset/googleLogo.png";
 
 const FacebookLogin = styled.div`
   color: #385285;
@@ -38,6 +42,85 @@ const LOGIN_MUTATION = gql`
       error
     }
   }
+`;
+
+const BigBox = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const LeftBox = styled.div`
+  width: 50%;
+  margin-right: 10px;
+`;
+
+const RightBox = styled.div`
+  width: 50%;
+  margin-left: 10px;
+
+  background-color: #fafafa;
+`;
+
+const Img = styled.img`
+  max-width: 100%;
+`;
+
+const LetterImg = styled.img`
+  max-width: 100%;
+`;
+
+const Forgot = styled.span`
+  margin-top: 25px;
+  font-size: 11px;
+`;
+
+const LogoBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Apple = styled.img`
+  width: 40%;
+  margin-right: 5px;
+`;
+
+const Google = styled.img`
+  width: 40%;
+  margin-left: 5px;
+`;
+
+const Get = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+`;
+
+const Info = styled.div`
+  width: 70%;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const FirstInfo = styled.div`
+  color: #b5adad;
+  font-size: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const SecondInfo = styled.div`
+  margin-top: 20px;
+  font-size: 12px;
+  color: #b5adad;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 function Login() {
@@ -112,61 +195,94 @@ function Login() {
   return (
     <AuthLayout>
       <PageTitle title="Login" />
-      <FormBox>
-        <div>
-          <FontAwesomeIcon icon={faInstagram} size="3x" />
-        </div>
-        <Notification>{location?.state?.message}</Notification>
-        <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
-          <Input
-            ref={register({
-              required: "Username is required",
-              // required가 true가 되면 메시지가 안나가고 검사만함
-              minLength: {
-                value: 5,
-                message: "Username should be longer than 5 chars.",
-              },
-              //pattern : "", <-을통해 정규식 이용가능
-              // validate:(currentValue)=> currentValue.includes("@")
-            })}
-            onChange={clearLoginError}
-            name="username"
-            type="text"
-            placeholder="Username"
-            hasError={Boolean(errors?.username?.message)}
-            // hasError는 임의로 만들어준것임! 빨간 테두리 위해!
+      <BigBox>
+        <LeftBox>
+          <Img src={leftImg} />
+        </LeftBox>
+        <RightBox>
+          <FormBox>
+            <div>
+              <LetterImg src={letter} />
+              {/* <FontAwesomeIcon icon={faInstagram} size="3x" /> */}
+            </div>
+            <Notification>{location?.state?.message}</Notification>
+            <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
+              <Input
+                ref={register({
+                  required: "Username is required",
+                  // required가 true가 되면 메시지가 안나가고 검사만함
+                  minLength: {
+                    value: 5,
+                    message: "Username should be longer than 5 chars.",
+                  },
+                  //pattern : "", <-을통해 정규식 이용가능
+                  // validate:(currentValue)=> currentValue.includes("@")
+                })}
+                onChange={clearLoginError}
+                name="username"
+                type="text"
+                placeholder="Username"
+                hasError={Boolean(errors?.username?.message)}
+                // hasError는 임의로 만들어준것임! 빨간 테두리 위해!
+              />
+              <FormError message={errors?.username?.message} />
+              <Input
+                ref={register({
+                  required: "Password is required.",
+                })}
+                onChange={clearLoginError}
+                name="password"
+                type="password"
+                placeholder="Password"
+                hasError={Boolean(errors?.password?.message)}
+              />
+              <FormError message={errors?.password?.message} />
+              <Button
+                type="submit"
+                value={loading ? "Loading..." : "Log in"}
+                disabled={!formState.isValid || loading}
+              />
+              <FormError message={errors?.result?.message} />{" "}
+              {/*isValid 다입력되면 true이고 아니면 false  */}
+            </form>
+            <Separator />
+            <FacebookLogin>
+              <FontAwesomeIcon icon={faFacebookSquare} />
+              <span>Log in with Facebook</span>
+            </FacebookLogin>
+            <Forgot>Forgot password?</Forgot>
+          </FormBox>
+          <BottomBox
+            cta="Don't have an account?"
+            linkText="Sign up"
+            link={routes.signUp}
           />
-          <FormError message={errors?.username?.message} />
-          <Input
-            ref={register({
-              required: "Password is required.",
-            })}
-            onChange={clearLoginError}
-            name="password"
-            type="password"
-            placeholder="Password"
-            hasError={Boolean(errors?.password?.message)}
-          />
-          <FormError message={errors?.password?.message} />
-          <Button
-            type="submit"
-            value={loading ? "Loading..." : "Log in"}
-            disabled={!formState.isValid || loading}
-          />
-          <FormError message={errors?.result?.message} />{" "}
-          {/*isValid 다입력되면 true이고 아니면 false  */}
-        </form>
-        <Separator />
-        <FacebookLogin>
-          <FontAwesomeIcon icon={faFacebookSquare} />
-          <span>Log in with Facebook</span>
-        </FacebookLogin>
-      </FormBox>
-      <BottomBox
-        cta="Don't have an account?"
-        linkText="Sign up"
-        link={routes.signUp}
-      />
+          <Get>Get the app.</Get>
+          <LogoBox>
+            <Apple src={apple} />
+            <Google src={google} />
+          </LogoBox>
+        </RightBox>
+      </BigBox>
+      <Info>
+        <FirstInfo>
+          <span>About</span>
+          <span>Blog</span>
+          <span>Jobs</span>
+          <span>Help</span>
+          <span>API</span>
+          <span>Privacy</span>
+          <span>Terms</span>
+          <span>Top Accounts</span>
+          <span>Hashtags</span>
+          <span>Locations</span>
+        </FirstInfo>
+        <SecondInfo>
+          <div>English</div>
+          <div>C</div>
+          <div>2021 Kwangstagram from KwangCompany</div>
+        </SecondInfo>
+      </Info>
     </AuthLayout>
   );
 }

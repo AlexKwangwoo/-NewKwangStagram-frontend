@@ -13,8 +13,13 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  max-width: 350px;
+  max-width: 730px;
   width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const Footer = styled.footer`
@@ -32,11 +37,11 @@ function AuthLayout({ children }) {
   return (
     <Container>
       <Wrapper>{children}</Wrapper>
-      <Footer>
+      {/* <Footer>
         <DarkModeBtn onClick={darkMode ? disableDarkMode : enableDarkMode}>
           <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
         </DarkModeBtn>
-      </Footer>
+      </Footer> */}
     </Container>
   );
 }

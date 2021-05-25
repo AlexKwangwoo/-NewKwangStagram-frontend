@@ -1,3 +1,6 @@
+시작하기위해선
+npm run start
+
 1. npx create-react-app NewKwangStagram_front
 
 2. 아래 다 다운로드
@@ -181,3 +184,4 @@ export default Login; <-위에랑 이거는 똑같은 형식임
       ? "https://newkwangstagram-backend.herokuapp.com/graphql"
       : "http://localhost:4000/graphql",설정 해주면 됨!! 디비 뭐쓸껀지
     - 배포가 되고.. 사인업 가서 새로고침하면 페이지 에러가 뜬다!
+    - 저걸 해결하기위해 \_redirect 페이지를 public에 만들어준다!

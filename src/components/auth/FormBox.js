@@ -6,7 +6,10 @@ const Container = styled(BaseBox)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 35px 40px 25px 40px;
+  width: 100%;
+  background-color: white;
+
+  padding: 30px;
   margin-bottom: 10px;
   form {
     margin-top: 35px;
