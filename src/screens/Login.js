@@ -123,6 +123,13 @@ const SecondInfo = styled.div`
   justify-content: center;
 `;
 
+const InfoDetail = styled.div`
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 function Login() {
   const location = useLocation();
   // console.log(location);
@@ -266,16 +273,16 @@ function Login() {
       </BigBox>
       <Info>
         <FirstInfo>
-          <span>About</span>
-          <span>Blog</span>
-          <span>Jobs</span>
-          <span>Help</span>
-          <span>API</span>
-          <span>Privacy</span>
-          <span>Terms</span>
-          <span>Top Accounts</span>
-          <span>Hashtags</span>
-          <span>Locations</span>
+          <InfoDetail>About</InfoDetail>
+          <InfoDetail>Blog</InfoDetail>
+          <InfoDetail>Jobs</InfoDetail>
+          <InfoDetail>Help</InfoDetail>
+          <InfoDetail>API</InfoDetail>
+          <InfoDetail>Privacy</InfoDetail>
+          <InfoDetail>Terms</InfoDetail>
+          <InfoDetail>Top Accounts</InfoDetail>
+          <InfoDetail>Hashtags</InfoDetail>
+          <InfoDetail>Locations</InfoDetail>
         </FirstInfo>
         <SecondInfo>
           <div>English</div>

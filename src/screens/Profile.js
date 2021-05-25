@@ -117,6 +117,8 @@ const Icon = styled.span`
   }
 `;
 
+const LogoutBtn = styled.button``;
+
 const ProfileBtn = styled(Button).attrs({
   as: "span",
 })`
@@ -228,6 +230,11 @@ function Profile() {
     }
   };
 
+  const Logout = () => {
+    localStorage.removeItem("TOKEN");
+    window.location.assign("/");
+  };
+
   return (
     <div>
       <PageTitle
@@ -241,6 +248,7 @@ function Profile() {
           <Row>
             <Username>{data?.seeProfile?.username}</Username>
             {data?.seeProfile ? getButton(data.seeProfile) : null}
+            <LogoutBtn onClick={Logout}>Log out</LogoutBtn>
           </Row>
           <Row>
             <List>
@@ -259,7 +267,6 @@ function Profile() {
           <Row>
             <Name>
               {data?.seeProfile?.firstName}
-              {"  "}
               {data?.seeProfile?.lastName}
             </Name>
           </Row>
