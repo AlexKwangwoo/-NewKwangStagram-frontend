@@ -67,6 +67,8 @@ const Img = styled.img`
 
 const LetterImg = styled.img`
   max-width: 100%;
+  margin-top: 10px;
+  margin-bottom: -10px;
 `;
 
 const Forgot = styled.span`
@@ -285,9 +287,7 @@ function Login() {
           <InfoDetail>Locations</InfoDetail>
         </FirstInfo>
         <SecondInfo>
-          <div>English</div>
-          <div>C</div>
-          <div>2021 Kwangstagram from KwangCompany</div>
+          <div>English © 2021 Kwangstagram from KwangCompany</div>
         </SecondInfo>
       </Info>
     </AuthLayout>

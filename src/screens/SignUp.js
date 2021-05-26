@@ -279,9 +279,7 @@ function SignUp() {
           <InfoDetail>Locations</InfoDetail>
         </FirstInfo>
         <SecondInfo>
-          <div>English</div>
-          <div>C</div>
-          <div>2021 Kwangstagram from KwangCompany</div>
+          <div>English © 2021 Kwangstagram from KwangCompany</div>
         </SecondInfo>
       </Info>
     </AuthLayout>

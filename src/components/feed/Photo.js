@@ -31,7 +31,7 @@ const PhotoContainer = styled.div`
   max-width: 615px;
 `;
 const PhotoHeader = styled.div`
-  padding: 15px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgb(239, 239, 239);
@@ -41,9 +41,16 @@ const Username = styled(FatText)`
   margin-left: 15px;
 `;
 
-const PhotoFile = styled.img`
+const PhotoFile = styled.div`
   min-width: 100%;
-  max-width: 100%;
+  width: 610px;
+  height: 610px;
+  max-width: 610px;
+  max-height: 610px;
+  background-color: red;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
 `;
 
 const PhotoData = styled.div`
@@ -73,6 +80,26 @@ const Likes = styled(FatText)`
   display: block;
 `;
 
+const CircleAvatar = styled.div`
+  width: 34px;
+  height: 34px;
+  border-radius: 50px;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
+`;
+
+const CircleAvatarBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #c42d91;
+  border-radius: 50px;
+`;
+
 function Photo({
   id,
   user,
@@ -83,6 +110,7 @@ function Photo({
   commentNumber,
   comments,
 }) {
+  console.log("filefilefile", file);
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
     const {
@@ -151,7 +179,9 @@ function Photo({
     <PhotoContainer key={id}>
       <PhotoHeader>
         <Link to={`/users/${user.username}`}>
-          <Avatar lg url={user.avatar} />
+          <CircleAvatarBox>
+            <CircleAvatar src={user?.avatar} />
+          </CircleAvatarBox>
         </Link>
         <Link to={`/users/${user.username}`}>
           <Username>{user.username}</Username>
