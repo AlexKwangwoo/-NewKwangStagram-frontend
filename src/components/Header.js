@@ -16,11 +16,14 @@ import Avatar from "./Avatar";
 import letter from "../asset/letterB.png";
 
 const SHeader = styled.header`
+  top: 0;
+  right: 0;
+  z-index: 2;
+  position: fixed;
   width: 100%;
   height: 60px;
   background-color: white;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
-
   padding: 18px 0px;
   display: flex;
   align-items: center;

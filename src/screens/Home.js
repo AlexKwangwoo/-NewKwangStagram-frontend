@@ -59,6 +59,7 @@ const ISME_QUERY = gql`
 
 const HomeContainer = styled.div`
   display: flex;
+  padding-top: 60px;
 `;
 
 const SlideOnTopSpace = styled.div`
@@ -125,6 +126,13 @@ const Right = styled.div`
   padding-left: 30px;
   margin-top: -18px;
   width: 500px;
+
+  position: relative;
+`;
+
+const RightInside = styled.div`
+  position: fixed;
+  /* left: 1000px; */
 `;
 
 const UserName = styled.div`
@@ -282,7 +290,7 @@ function Home() {
       autoplayScroll: 1,
       autoplaySpeed: 800,
       duration: 15000,
-      arrows: true,
+      arrows: false,
     };
     return (
       <SliderFixed {...settings2}>
@@ -337,63 +345,65 @@ function Home() {
         ))}
       </Left>
       <Right>
-        <Me>
-          <LeftSideAvatar src={isMe?.me?.avatar} />
-          <LeftSideMyInfoBox>
-            <LeftSideMyName>{isMe?.me?.username}</LeftSideMyName>
-            <LeftSideMyEmail>{isMe?.me?.email}</LeftSideMyEmail>
-          </LeftSideMyInfoBox>
-        </Me>
-        <Suggestions>
-          <SuggestionText>Suggestion For You</SuggestionText>
-          <SuggestionBox>
-            <CustomScrollbars
-              style={{ width: 300, height: 350 }}
-              autoHide
-              autoHideTimeout={500}
-              autoHideDuration={200}
-            >
-              {isMe?.me?.followers.length >= 6
-                ? isMe?.me?.followers?.map((follower) => (
-                    <FollowerBox key={follower.id}>
-                      <FollowerLeft>
-                        <SuggestionAvatar src={follower.avatar} />
-                        <SuggestionInfo>
-                          <SuggestionUsername>
-                            {follower.username}
-                          </SuggestionUsername>
-                          <SuggestionLetter>Follows you</SuggestionLetter>
-                        </SuggestionInfo>
-                      </FollowerLeft>
-                      <FollowerRight>Follow</FollowerRight>
-                    </FollowerBox>
-                  ))
-                : allUserFound?.allUser?.map((follower) => (
-                    <FollowerBox key={follower.id}>
-                      <FollowerLeft>
-                        <SuggestionAvatar src={follower.avatar} />
-                        <SuggestionInfo>
-                          <SuggestionUsername>
-                            {follower.username}
-                          </SuggestionUsername>
-                          <SuggestionLetter>Follows you</SuggestionLetter>
-                        </SuggestionInfo>
-                      </FollowerLeft>
-                      <FollowerRight>Follow</FollowerRight>
-                    </FollowerBox>
-                  ))}
-            </CustomScrollbars>
-          </SuggestionBox>
-        </Suggestions>
+        <RightInside>
+          <Me>
+            <LeftSideAvatar src={isMe?.me?.avatar} />
+            <LeftSideMyInfoBox>
+              <LeftSideMyName>{isMe?.me?.username}</LeftSideMyName>
+              <LeftSideMyEmail>{isMe?.me?.email}</LeftSideMyEmail>
+            </LeftSideMyInfoBox>
+          </Me>
+          <Suggestions>
+            <SuggestionText>Suggestion For You</SuggestionText>
+            <SuggestionBox>
+              <CustomScrollbars
+                style={{ width: 300, height: 350 }}
+                autoHide
+                autoHideTimeout={500}
+                autoHideDuration={200}
+              >
+                {isMe?.me?.followers.length >= 6
+                  ? isMe?.me?.followers?.map((follower) => (
+                      <FollowerBox key={follower.id}>
+                        <FollowerLeft>
+                          <SuggestionAvatar src={follower.avatar} />
+                          <SuggestionInfo>
+                            <SuggestionUsername>
+                              {follower.username}
+                            </SuggestionUsername>
+                            <SuggestionLetter>Follows you</SuggestionLetter>
+                          </SuggestionInfo>
+                        </FollowerLeft>
+                        <FollowerRight>Follow</FollowerRight>
+                      </FollowerBox>
+                    ))
+                  : allUserFound?.allUser?.map((follower) => (
+                      <FollowerBox key={follower.id}>
+                        <FollowerLeft>
+                          <SuggestionAvatar src={follower.avatar} />
+                          <SuggestionInfo>
+                            <SuggestionUsername>
+                              {follower.username}
+                            </SuggestionUsername>
+                            <SuggestionLetter>Follows you</SuggestionLetter>
+                          </SuggestionInfo>
+                        </FollowerLeft>
+                        <FollowerRight>Follow</FollowerRight>
+                      </FollowerBox>
+                    ))}
+              </CustomScrollbars>
+            </SuggestionBox>
+          </Suggestions>
 
-        <RightFooter>
-          <Info>
-            About &middot; Help &middot; Press &middot; API &middot; Jobs
-            &middot; Privacy &middot; Terms &middot;
-          </Info>
-          <Info>Top Accounts &middot; Hashtags &middot; Language</Info>
-          <InfoLast>© 2021 KWANGSTAGRAM FROM KWANGCOMPANY</InfoLast>
-        </RightFooter>
+          <RightFooter>
+            <Info>
+              About &middot; Help &middot; Press &middot; API &middot; Jobs
+              &middot; Privacy &middot; Terms &middot;
+            </Info>
+            <Info>Top Accounts &middot; Hashtags &middot; Language</Info>
+            <InfoLast>© 2021 KWANGSTAGRAM FROM KWANGCOMPANY</InfoLast>
+          </RightFooter>
+        </RightInside>
       </Right>
     </HomeContainer>
   );
