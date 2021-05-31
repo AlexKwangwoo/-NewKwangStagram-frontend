@@ -46,6 +46,10 @@ const SEE_PROFILE_QUERY = gql`
   }
   ${PHOTO_FRAGMENT}
 `;
+
+const ProfileContainer = styled.div`
+  padding-top: 60px;
+`;
 const Header = styled.div`
   display: flex;
 `;
@@ -236,7 +240,7 @@ function Profile() {
   };
 
   return (
-    <div>
+    <ProfileContainer>
       <PageTitle
         title={
           loading ? "Loading..." : `${data?.seeProfile?.username}'s Profile`
@@ -289,7 +293,7 @@ function Profile() {
           </Photo>
         ))}
       </Grid>
-    </div>
+    </ProfileContainer>
   );
 }
 export default Profile;
