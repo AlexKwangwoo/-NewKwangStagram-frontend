@@ -42,6 +42,7 @@ const ISME_QUERY = gql`
       id
       username
       avatar
+      email
       following {
         username
         avatar
@@ -73,14 +74,14 @@ const SlideOnTopSpace = styled.div`
   }
 `;
 
-const settings = {
-  slidesToShow: 7,
+const settings1 = {
   arrowsBlock: false,
   autoplay: true,
-  autoplayScroll: 2,
+  autoplayScroll: 1,
   autoplaySpeed: 600,
   duration: 15000,
   arrows: true,
+  slidesToShow: 7,
 };
 
 const SlideAvatar = styled.div`
@@ -111,11 +112,13 @@ const CircleAvatarBox = styled.div`
 `;
 
 const Left = styled.div``;
-const Right = styled.div`
-  margin-top: -18px;
 
+const Right = styled.div`
+  width: 100%;
+  padding-top: 15px;
+  padding-left: 30px;
+  margin-top: -18px;
   width: 500px;
-  background-color: red;
 `;
 
 const UserName = styled.div`
@@ -125,19 +128,104 @@ const UserName = styled.div`
 const Text = styled.div`
   width: 20px;
   height: 20px;
-  background-color: red;
 `;
 
-const SuggestionText = styled.div``;
+const Me = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+`;
 
-const Me = styled.div``;
+const LeftSideAvatar = styled.div`
+  width: 52px;
+  height: 52px;
+  border-radius: 50px;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
+`;
+
+const LeftSideMyInfoBox = styled.div`
+  margin-left: 10px;
+`;
+
+const LeftSideMyName = styled.div`
+  margin-bottom: 3px;
+
+  font-weight: 600;
+`;
+
+const LeftSideMyEmail = styled.div`
+  color: #8f8f8f;
+  font-weight: 400;
+`;
+
 const Suggestions = styled.div``;
 
-const RightFooter = styled.div``;
+const SuggestionText = styled.div`
+  color: #8f8f8f;
+  font-weight: 600;
+`;
 
-const Info = styled.div``;
+const SuggestionBox = styled.div``;
 
-const InfoLast = styled.div``;
+const FollowerBox = styled.div`
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const FollowerLeft = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const FollowerRight = styled.div`
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #26a5f6;
+`;
+
+const SuggestionAvatar = styled.div`
+  width: 38px;
+  height: 38px;
+  border-radius: 50px;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
+`;
+
+const SuggestionInfo = styled.div`
+  margin-left: 15px;
+`;
+const SuggestionUsername = styled.div`
+  margin-bottom: 3px;
+  font-weight: 600;
+`;
+const SuggestionLetter = styled.div`
+  color: #8f8f8f;
+  font-weight: 500;
+  font-size: 12px;
+`;
+
+const RightFooter = styled.div`
+  margin-top: 30px;
+`;
+
+const Info = styled.div`
+  color: #c7c7c7;
+  font-size: 11px;
+  margin-bottom: 7px;
+`;
+
+const InfoLast = styled.div`
+  color: #c7c7c7;
+  font-size: 12px;
+  margin-top: 17px;
+`;
+
 function Home() {
   const { data: isMe } = useQuery(ISME_QUERY);
   const { data: allUserFound } = useQuery(ALLUSER_QUERY);
@@ -147,8 +235,14 @@ function Home() {
     },
   });
 
-  console.log("isMe", isMe);
+  // const allUserFoundExceptMe = allUserFound?.filter(
+  //   (user) => isMe.username !== user.username
+  // );
 
+  // console.log("allUserFoundExceptMe", allUserFoundExceptMe);
+
+  console.log("isMe", isMe);
+  console.log("allUserFound", allUserFound);
   return (
     <HomeContainer>
       <PageTitle title="Home" />
@@ -156,7 +250,7 @@ function Home() {
       <Left>
         {allUserFound && (
           <SlideOnTopSpace>
-            <SliderFixed {...settings}>
+            <SliderFixed {...settings1}>
               {allUserFound?.allUser?.map((user) => (
                 <SlideAvatar key={user.id}>
                   <CircleAvatarBox>
@@ -174,14 +268,52 @@ function Home() {
         ))}
       </Left>
       <Right>
-        <Me> {isMe?.me?.username}</Me>
+        <Me>
+          <LeftSideAvatar src={isMe?.me?.avatar} />
+          <LeftSideMyInfoBox>
+            <LeftSideMyName>{isMe?.me?.username}</LeftSideMyName>
+            <LeftSideMyEmail>{isMe?.me?.email}</LeftSideMyEmail>
+          </LeftSideMyInfoBox>
+        </Me>
         <Suggestions>
           <SuggestionText>Suggestion For You</SuggestionText>
+          <SuggestionBox>
+            {isMe?.me?.followers.length >= 6
+              ? isMe?.me?.followers?.map((follower) => (
+                  <FollowerBox key={follower.id}>
+                    <FollowerLeft>
+                      <SuggestionAvatar src={follower.avatar} />
+                      <SuggestionInfo>
+                        <SuggestionUsername>
+                          {follower.username}
+                        </SuggestionUsername>
+                        <SuggestionLetter>Follows you</SuggestionLetter>
+                      </SuggestionInfo>
+                    </FollowerLeft>
+                    <FollowerRight>Follow</FollowerRight>
+                  </FollowerBox>
+                ))
+              : allUserFound?.allUser?.map((follower) => (
+                  <FollowerBox key={follower.id}>
+                    <FollowerLeft>
+                      <SuggestionAvatar src={follower.avatar} />
+                      <SuggestionInfo>
+                        <SuggestionUsername>
+                          {follower.username}
+                        </SuggestionUsername>
+                        <SuggestionLetter>Follows you</SuggestionLetter>
+                      </SuggestionInfo>
+                    </FollowerLeft>
+                    <FollowerRight>Follow</FollowerRight>
+                  </FollowerBox>
+                ))}
+          </SuggestionBox>
         </Suggestions>
+
         <RightFooter>
           <Info>
             About &middot; Help &middot; Press &middot; API &middot; Jobs
-            &middot; Privacy &middot; Terms &middot; Locations &middot;
+            &middot; Privacy &middot; Terms &middot;
           </Info>
           <Info>Top Accounts &middot; Hashtags &middot; Language</Info>
           <InfoLast>© 2021 KWANGSTAGRAM FROM KWANGCOMPANY</InfoLast>
