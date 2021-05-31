@@ -5,6 +5,7 @@ import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
 import { Slider as SliderFixed } from "infinite-react-carousel";
 import styled from "styled-components";
 import useUser from "../hooks/useUser";
+import { useEffect } from "react";
 
 const FEED_QUERY = gql`
   query seeFeed($offset: Int!) {
@@ -74,26 +75,30 @@ const SlideOnTopSpace = styled.div`
   }
 `;
 
-const settings1 = {
-  arrowsBlock: false,
-  autoplay: true,
-  autoplayScroll: 1,
-  autoplaySpeed: 600,
-  duration: 15000,
-  arrows: true,
-  slidesToShow: 7,
-};
+const DivBox = styled.div`
+  background-color: white;
+  border: 0.5px solid #dbdbdb;
+  border-radius: 3px;
+  width: 615px;
+  height: 100px;
+  margin-bottom: 26px;
+  margin-top: -18px;
+  padding-top: 5px;
+  font-size: 11px;
+  a {
+    color: inherit;
+  }
+`;
 
 const SlideAvatar = styled.div`
-  width: 20px;
-  height: 100%;
   margin-top: 10px;
   text-align: center;
+  /* background-color: red; */
 `;
 
 const CircleAvatar = styled.div`
-  width: 51px;
-  height: 51px;
+  width: 50px;
+  height: 50px;
   border-radius: 50px;
   background-image: url(${(props) => props.src});
   background-size: cover;
@@ -235,6 +240,44 @@ function Home() {
     },
   });
 
+  const settings = {
+    slidesToShow: 7,
+    arrowsBlock: false,
+    autoplay: true,
+    autoplayScroll: 1,
+    autoplaySpeed: 600,
+    duration: 15000,
+    arrows: true,
+  };
+
+  const ShowSlide = (allUserFound) => {
+    const settings2 = {
+      slidesToShow: 7,
+      arrowsBlock: false,
+      autoplay: true,
+      autoplayScroll: 1,
+      autoplaySpeed: 600,
+      duration: 15000,
+      arrows: true,
+    };
+    return (
+      <SliderFixed {...settings2}>
+        {allUserFound?.allUser?.map((user) => (
+          <SlideAvatar key={user.id}>
+            <CircleAvatarBox>
+              <CircleAvatar src={user?.avatar} />
+            </CircleAvatarBox>
+            <UserName>{user?.username}</UserName>
+          </SlideAvatar>
+        ))}
+      </SliderFixed>
+    );
+  };
+
+  useEffect(() => {
+    ShowSlide(allUserFound);
+  }, [allUserFound]);
+
   // const allUserFoundExceptMe = allUserFound?.filter(
   //   (user) => isMe.username !== user.username
   // );
@@ -248,9 +291,11 @@ function Home() {
       <PageTitle title="Home" />
 
       <Left>
-        {allUserFound && (
+        {allUserFound && <DivBox>{ShowSlide(allUserFound)}</DivBox>}
+
+        {/* {allUserFound && (
           <SlideOnTopSpace>
-            <SliderFixed {...settings1}>
+            <SliderFixed {...settings}>
               {allUserFound?.allUser?.map((user) => (
                 <SlideAvatar key={user.id}>
                   <CircleAvatarBox>
@@ -261,7 +306,7 @@ function Home() {
               ))}
             </SliderFixed>
           </SlideOnTopSpace>
-        )}
+        )} */}
 
         {data?.seeFeed?.map((photo) => (
           <Photo key={photo.id} {...photo} />
