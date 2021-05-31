@@ -6,6 +6,7 @@ import { Slider as SliderFixed } from "infinite-react-carousel";
 import styled from "styled-components";
 import useUser from "../hooks/useUser";
 import { useEffect } from "react";
+import { Scrollbars } from "react-custom-scrollbars";
 
 const FEED_QUERY = gql`
   query seeFeed($offset: Int!) {
@@ -172,9 +173,14 @@ const SuggestionText = styled.div`
   font-weight: 600;
 `;
 
-const SuggestionBox = styled.div``;
+const SuggestionBox = styled.div`
+  margin-top: 20px;
+`;
 
 const FollowerBox = styled.div`
+  &:first-child {
+    margin-top: 0px;
+  }
   margin-top: 15px;
   display: flex;
   justify-content: space-between;
@@ -191,6 +197,8 @@ const FollowerRight = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: #26a5f6;
+
+  padding-right: 20px;
 `;
 
 const SuggestionAvatar = styled.div`
@@ -231,6 +239,22 @@ const InfoLast = styled.div`
   margin-top: 17px;
 `;
 
+const renderThumb = ({ style, ...props }) => {
+  const thumbStyle = {
+    borderRadius: 6,
+    backgroundColor: "rgba(35, 49, 86, 0.8)",
+  };
+  return <div style={{ ...style, ...thumbStyle }} {...props} />;
+};
+
+const CustomScrollbars = (props) => (
+  <Scrollbars
+    renderThumbHorizontal={renderThumb}
+    renderThumbVertical={renderThumb}
+    {...props}
+  />
+);
+
 function Home() {
   const { data: isMe } = useQuery(ISME_QUERY);
   const { data: allUserFound } = useQuery(ALLUSER_QUERY);
@@ -240,15 +264,15 @@ function Home() {
     },
   });
 
-  const settings = {
-    slidesToShow: 7,
-    arrowsBlock: false,
-    autoplay: true,
-    autoplayScroll: 1,
-    autoplaySpeed: 600,
-    duration: 15000,
-    arrows: true,
-  };
+  // const settings = {
+  //   slidesToShow: 7,
+  //   arrowsBlock: false,
+  //   autoplay: true,
+  //   autoplayScroll: 1,
+  //   autoplaySpeed: 600,
+  //   duration: 15000,
+  //   arrows: true,
+  // };
 
   const ShowSlide = (allUserFound) => {
     const settings2 = {
@@ -256,7 +280,7 @@ function Home() {
       arrowsBlock: false,
       autoplay: true,
       autoplayScroll: 1,
-      autoplaySpeed: 600,
+      autoplaySpeed: 800,
       duration: 15000,
       arrows: true,
     };
@@ -323,35 +347,42 @@ function Home() {
         <Suggestions>
           <SuggestionText>Suggestion For You</SuggestionText>
           <SuggestionBox>
-            {isMe?.me?.followers.length >= 6
-              ? isMe?.me?.followers?.map((follower) => (
-                  <FollowerBox key={follower.id}>
-                    <FollowerLeft>
-                      <SuggestionAvatar src={follower.avatar} />
-                      <SuggestionInfo>
-                        <SuggestionUsername>
-                          {follower.username}
-                        </SuggestionUsername>
-                        <SuggestionLetter>Follows you</SuggestionLetter>
-                      </SuggestionInfo>
-                    </FollowerLeft>
-                    <FollowerRight>Follow</FollowerRight>
-                  </FollowerBox>
-                ))
-              : allUserFound?.allUser?.map((follower) => (
-                  <FollowerBox key={follower.id}>
-                    <FollowerLeft>
-                      <SuggestionAvatar src={follower.avatar} />
-                      <SuggestionInfo>
-                        <SuggestionUsername>
-                          {follower.username}
-                        </SuggestionUsername>
-                        <SuggestionLetter>Follows you</SuggestionLetter>
-                      </SuggestionInfo>
-                    </FollowerLeft>
-                    <FollowerRight>Follow</FollowerRight>
-                  </FollowerBox>
-                ))}
+            <CustomScrollbars
+              style={{ width: 300, height: 350 }}
+              autoHide
+              autoHideTimeout={500}
+              autoHideDuration={200}
+            >
+              {isMe?.me?.followers.length >= 6
+                ? isMe?.me?.followers?.map((follower) => (
+                    <FollowerBox key={follower.id}>
+                      <FollowerLeft>
+                        <SuggestionAvatar src={follower.avatar} />
+                        <SuggestionInfo>
+                          <SuggestionUsername>
+                            {follower.username}
+                          </SuggestionUsername>
+                          <SuggestionLetter>Follows you</SuggestionLetter>
+                        </SuggestionInfo>
+                      </FollowerLeft>
+                      <FollowerRight>Follow</FollowerRight>
+                    </FollowerBox>
+                  ))
+                : allUserFound?.allUser?.map((follower) => (
+                    <FollowerBox key={follower.id}>
+                      <FollowerLeft>
+                        <SuggestionAvatar src={follower.avatar} />
+                        <SuggestionInfo>
+                          <SuggestionUsername>
+                            {follower.username}
+                          </SuggestionUsername>
+                          <SuggestionLetter>Follows you</SuggestionLetter>
+                        </SuggestionInfo>
+                      </FollowerLeft>
+                      <FollowerRight>Follow</FollowerRight>
+                    </FollowerBox>
+                  ))}
+            </CustomScrollbars>
           </SuggestionBox>
         </Suggestions>
 

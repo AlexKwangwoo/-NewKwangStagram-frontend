@@ -175,6 +175,7 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     캐쉬에서 조금이라도 객체가 바뀌면 리액트가 즉각 리 랜더를 한다!
 
 34. 배포!! 매우쉽다
+
     - 넬리파이가서 새로운앱 만든다
     - Build Command는 CI= npm run build 이여야한다 넷리파이 어플만들때!!
     - publish directory 는 build/ 로 바꿔준다!
@@ -186,3 +187,6 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     - 배포가 되고.. 사인업 가서 새로고침하면 페이지 에러가 뜬다!
     - 저걸 해결하기위해 \_redirect 페이지를 public에 만들어준다!
     - 다시 배포하기위해서는 넷리파이 가서 연동시켜주면된다!
+
+35. 스크롤바
+    npm install react-custom-scrollbars --save
