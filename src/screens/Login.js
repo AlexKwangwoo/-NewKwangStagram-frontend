@@ -132,6 +132,22 @@ const InfoDetail = styled.div`
   }
 `;
 
+const LoadingAlert = styled.div`
+  width: 100%;
+  height: 30px;
+  font-size: 19px;
+  margin: auto;
+  text-align: center;
+
+  margin-top: -20px;
+  margin-bottom: 20px;
+`;
+
+const Impact = styled.span`
+  font-weight: 700;
+  color: red;
+`;
+
 function Login() {
   const location = useLocation();
   // console.log(location);
@@ -274,6 +290,10 @@ function Login() {
         </RightBox>
       </BigBox>
       <Info>
+        <LoadingAlert>
+          ⚠️ Loading might takes <Impact>10 Seconds</Impact> because of{" "}
+          <Impact>DB ⚠️</Impact>
+        </LoadingAlert>
         <FirstInfo>
           <InfoDetail>About</InfoDetail>
           <InfoDetail>Blog</InfoDetail>
