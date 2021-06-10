@@ -336,29 +336,27 @@ function Home() {
   // ------------------------------follow unFollow------------------------------
   const unfollowUserUpdate = (username) => {
     // 업데이트는 캐쉬를 가져올수있음!
-
-    const { cache } = client;
-    cache.modify({
-      id: `User:${username}`,
-      fields: {
-        isFollowing(prev) {
-          return false;
-        },
-        totalFollowers(prev) {
-          return prev - 1;
-        },
-      },
-    });
-
-    const { me } = userData;
-    cache.modify({
-      id: `User:${me?.username}`,
-      fields: {
-        totalFollowing(prev) {
-          return prev - 1;
-        },
-      },
-    });
+    // const { cache } = client;
+    // cache.modify({
+    //   id: `User:${username}`,
+    //   fields: {
+    //     isFollowing(prev) {
+    //       return false;
+    //     },
+    //     totalFollowers(prev) {
+    //       return prev - 1;
+    //     },
+    //   },
+    // });
+    // const { me } = userData;
+    // cache.modify({
+    //   id: `User:${me?.username}`,
+    //   fields: {
+    //     totalFollowing(prev) {
+    //       return prev - 1;
+    //     },
+    //   },
+    // });
   };
 
   const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
@@ -377,28 +375,27 @@ function Home() {
     // if (!ok) {
     //   return;
     // }
-    const { cache } = client;
-    cache.modify({
-      id: `User:${username}`,
-      fields: {
-        isFollowing(prev) {
-          return true;
-        },
-        totalFollowers(prev) {
-          return prev + 1;
-        },
-      },
-    });
-
-    const { me } = userData;
-    cache.modify({
-      id: `User:${me?.username}`,
-      fields: {
-        totalFollowing(prev) {
-          return prev + 1;
-        },
-      },
-    });
+    // const { cache } = client;
+    // cache.modify({
+    //   id: `User:${username}`,
+    //   fields: {
+    //     isFollowing(prev) {
+    //       return true;
+    //     },
+    //     totalFollowers(prev) {
+    //       return prev + 1;
+    //     },
+    //   },
+    // });
+    // const { me } = userData;
+    // cache.modify({
+    //   id: `User:${me?.username}`,
+    //   fields: {
+    //     totalFollowing(prev) {
+    //       return prev + 1;
+    //     },
+    //   },
+    // });
   };
   const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
     refetchQueries: [{ query: ISME_QUERY, variables: null }],
