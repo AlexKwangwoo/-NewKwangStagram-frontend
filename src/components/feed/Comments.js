@@ -181,7 +181,7 @@ function Comments({
       >
         <ModalScreen
           photoId={photoId}
-          user={userData.me}
+          user={userData?.me}
           file={file}
           comments={comments}
           isLiked={isLiked}
