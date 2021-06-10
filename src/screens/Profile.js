@@ -259,7 +259,7 @@ function Profile() {
 
     const { me } = userData;
     cache.modify({
-      id: `User:${me.username}`,
+      id: `User:${me?.username}`,
       fields: {
         totalFollowing(prev) {
           return prev - 1;
@@ -301,7 +301,7 @@ function Profile() {
 
     const { me } = userData;
     cache.modify({
-      id: `User:${me.username}`,
+      id: `User:${me?.username}`,
       fields: {
         totalFollowing(prev) {
           return prev + 1;
