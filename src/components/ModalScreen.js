@@ -340,12 +340,12 @@ const ModalScreen = ({
         <Inside bg={file}></Inside>
         <InsideSecond>
           <DivOne>
-            <Link to={`/users/${user.username}`}>
+            <Link to={`/users/${user?.username}`}>
               <CircleAvatar src={user?.avatar} />
             </Link>
             <UserInfo>
-              <UserName>{user.username}</UserName>
-              <UserEmail>{user.email}</UserEmail>
+              <UserName>{user?.username}</UserName>
+              <UserEmail>{user?.email}</UserEmail>
             </UserInfo>
           </DivOne>
           <DivTwo>
@@ -358,12 +358,12 @@ const ModalScreen = ({
                 comments?.map((comment, index) => (
                   <CommentBox key={index}>
                     <Box>
-                      <CircleAvatar src={comment.user.avatar} />
+                      <CircleAvatar src={comment?.user?.avatar} />
                     </Box>
                     <DivBox>
-                      <AText>{comment.user.username}</AText>
+                      <AText>{comment?.user?.username}</AText>
                       <Text>
-                        <CommentText>{comment.payload}</CommentText>
+                        <CommentText>{comment?.payload}</CommentText>
                       </Text>
                     </DivBox>
                   </CommentBox>
