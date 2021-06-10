@@ -4,6 +4,9 @@ import Comment from "./Comment";
 import { useForm } from "react-hook-form";
 import { gql, useMutation } from "@apollo/client";
 import useUser from "../../hooks/useUser";
+import ModalScreen from "../ModalScreen";
+import { useState } from "react";
+import Modal from "react-awesome-modal";
 
 const CREATE_COMMENT_MUTATION = gql`
   mutation createComment($photoId: Int!, $payload: String!) {
@@ -17,13 +20,15 @@ const CREATE_COMMENT_MUTATION = gql`
 
 const CommentsContainer = styled.div`
   margin-top: 20px;
+  /* background-color: red; */
 `;
 const CommentCount = styled.span`
-  opacity: 0.7;
+  opacity: 0.5;
   margin: 10px 0px;
   display: block;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 13px;
+  cursor: pointer;
 `;
 
 const PostCommentContainer = styled.div`
@@ -40,7 +45,16 @@ const PostCommentInput = styled.input`
   }
 `;
 
-function Comments({ photoId, author, caption, commentNumber, comments }) {
+function Comments({
+  photoId,
+  author,
+  caption,
+  commentNumber,
+  comments,
+  file,
+  isLiked,
+  toggleLikeMutation,
+}) {
   const { data: userData } = useUser();
   const { register, handleSubmit, setValue, getValues } = useForm();
   const createCommentUpdate = (cache, result) => {
@@ -133,22 +147,79 @@ function Comments({ photoId, author, caption, commentNumber, comments }) {
     });
   };
 
+  // const modalOpen = () => {
+  //   console.log("클릭됨");
+  //   return <ModalScreen user={userData} file={file}  />;
+  // };
+
+  const [visible, setVisible] = useState(false);
+  const openModal = () => {
+    setVisible(true);
+  };
+  const closeModal = () => {
+    setVisible(false);
+  };
+
+  const lastComment = commentNumber - 1;
+  const lastBeforeComment = lastComment - 1;
+
   return (
     <CommentsContainer>
       <Comment author={author} payload={caption} />
-      <CommentCount>
-        {commentNumber === 1 ? "1 comment" : `${commentNumber} comments`}
+      <CommentCount onClick={openModal}>
+        {commentNumber <= 1
+          ? `${commentNumber} comment`
+          : `Veiw All ${commentNumber} comments`}
       </CommentCount>
-      {comments?.map((comment) => (
-        <Comment
-          key={comment.id}
-          id={comment.id}
+
+      <Modal
+        visible={visible}
+        width="930"
+        height="600"
+        effect="fadeInUp"
+        onClickAway={() => closeModal()}
+      >
+        <ModalScreen
           photoId={photoId}
-          author={comment.user.username}
-          payload={comment.payload}
-          isMine={comment.isMine}
+          user={userData.me}
+          file={file}
+          comments={comments}
+          isLiked={isLiked}
+          toggleLikeMutation={toggleLikeMutation}
         />
-      ))}
+      </Modal>
+      {commentNumber > 2 ? (
+        <div>
+          <Comment
+            key={comments[lastBeforeComment].id}
+            id={comments[lastBeforeComment].id}
+            photoId={photoId}
+            author={comments[lastBeforeComment].user.username}
+            payload={comments[lastBeforeComment].payload}
+            isMine={comments[lastBeforeComment].isMine}
+          />
+          <Comment
+            key={comments[lastComment].id}
+            id={comments[lastComment].id}
+            photoId={photoId}
+            author={comments[lastComment].user.username}
+            payload={comments[lastComment].payload}
+            isMine={comments[lastComment].isMine}
+          />
+        </div>
+      ) : (
+        comments?.map((comment) => (
+          <Comment
+            key={comment.id}
+            id={comment.id}
+            photoId={photoId}
+            author={comment.user.username}
+            payload={comment.payload}
+            isMine={comment.isMine}
+          />
+        ))
+      )}
+
       <PostCommentContainer>
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <PostCommentInput

@@ -6,14 +6,19 @@ const Content = styled.main`
   margin-top: 45px;
   max-width: 930px;
   width: 100%;
+  /* background-color: red; */
+`;
+
+const MainContainer = styled.div`
+  width: 100%;
 `;
 
 function Layout({ children }) {
   return (
-    <>
+    <MainContainer>
       <Header />
       <Content>{children}</Content>
-    </>
+    </MainContainer>
   );
 }
 

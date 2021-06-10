@@ -42,15 +42,19 @@ const Username = styled(FatText)`
 `;
 
 const PhotoFile = styled.div`
-  min-width: 100%;
   width: 610px;
   height: 610px;
+  min-width: 100%;
   max-width: 610px;
   max-height: 610px;
-  background-color: red;
+  background-color: white;
   background-image: url(${(props) => props.src});
   background-size: cover;
   background-position: center;
+`;
+
+const PhotoDataWrapper = styled.div`
+  width: 100%;
 `;
 
 const PhotoData = styled.div`
@@ -110,7 +114,6 @@ function Photo({
   commentNumber,
   comments,
 }) {
-  console.log("filefilefile", file);
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
     const {
@@ -188,35 +191,40 @@ function Photo({
         </Link>
       </PhotoHeader>
       <PhotoFile src={file} />
-      <PhotoData>
-        <PhotoActions>
-          <div>
-            <PhotoAction onClick={toggleLikeMutation}>
-              <FontAwesomeIcon
-                style={{ color: isLiked ? "tomato" : "inherit" }}
-                icon={isLiked ? SolidHeart : faHeart}
-              />
-            </PhotoAction>
-            <PhotoAction>
-              <FontAwesomeIcon icon={faComment} />
-            </PhotoAction>
-            <PhotoAction>
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </PhotoAction>
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faBookmark} />
-          </div>
-        </PhotoActions>
-        <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
-        <Comments
-          photoId={id}
-          author={user.username}
-          caption={caption}
-          commentNumber={commentNumber}
-          comments={comments}
-        />
-      </PhotoData>
+      <PhotoDataWrapper>
+        <PhotoData>
+          <PhotoActions>
+            <div>
+              <PhotoAction onClick={toggleLikeMutation}>
+                <FontAwesomeIcon
+                  style={{ color: isLiked ? "tomato" : "inherit" }}
+                  icon={isLiked ? SolidHeart : faHeart}
+                />
+              </PhotoAction>
+              <PhotoAction>
+                <FontAwesomeIcon icon={faComment} />
+              </PhotoAction>
+              <PhotoAction>
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </PhotoAction>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faBookmark} />
+            </div>
+          </PhotoActions>
+          <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
+          <Comments
+            toggleLikeMutation={toggleLikeMutation}
+            isLiked={isLiked}
+            file={file}
+            photoId={id}
+            author={user.username}
+            caption={caption}
+            commentNumber={commentNumber}
+            comments={comments}
+          />
+        </PhotoData>
+      </PhotoDataWrapper>
     </PhotoContainer>
   );
 }

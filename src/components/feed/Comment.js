@@ -2,9 +2,9 @@ import { gql, useMutation } from "@apollo/client";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { FatText } from "../shared";
 import { Link } from "react-router-dom";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClosedCaptioning, faTimes } from "@fortawesome/free-solid-svg-icons";
 const DELETE_COMMENT_MUTATION = gql`
   mutation deleteComment($id: Int!) {
     deleteComment(id: $id) {
@@ -14,6 +14,9 @@ const DELETE_COMMENT_MUTATION = gql`
 `;
 
 const CommentContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 7px;
 `;
 const CommentCaption = styled.span`
@@ -27,6 +30,19 @@ const CommentCaption = styled.span`
     }
   }
   /* 해쉬태그 클릭가능하게 해줌! */
+`;
+
+const Icon = styled.div`
+  cursor: pointer;
+  display: flex;
+  color: #666464;
+`;
+
+const FatText = styled.span`
+  font-weight: 600;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 function Comment({ id, photoId, isMine, author, payload }) {
@@ -74,27 +90,32 @@ function Comment({ id, photoId, isMine, author, payload }) {
 
   return (
     <CommentContainer>
-      <Link to={`/users/${author}`}>
-        <FatText>{author}</FatText>
-      </Link>
+      <div>
+        <Link to={`/users/${author}`}>
+          <FatText>{author}</FatText>
+        </Link>
 
-      <CommentCaption>
-        {payload?.split(" ").map((word, index) =>
-          //먼저 문장이 있다면 띄워쓰기 기준으로 배열을 만들것임!
-          /#[\w]+/.test(word) ? (
-            // test를 통해 #~ 이 포함된 단어를 false true로 추출해낸다
-            <React.Fragment key={index}>
-              {/* true면 링크를 걸어줄것임! */}
-              <Link to={`/hashtags/${word}`}>{word} </Link>
-            </React.Fragment>
-          ) : (
-            // <></> 이거는 index같은걸 못가짐 그래서 React.Fragment 이걸씀
-            <React.Fragment key={index}>{word} </React.Fragment>
-          )
-        )}
-      </CommentCaption>
-
-      {isMine ? <button onClick={onDeleteClick}>❌</button> : null}
+        <CommentCaption>
+          {payload?.split(" ").map((word, index) =>
+            //먼저 문장이 있다면 띄워쓰기 기준으로 배열을 만들것임!
+            /#[\w]+/.test(word) ? (
+              // test를 통해 #~ 이 포함된 단어를 false true로 추출해낸다
+              <React.Fragment key={index}>
+                {/* true면 링크를 걸어줄것임! */}
+                <Link to={`/hashtags/${word}`}>{word} </Link>
+              </React.Fragment>
+            ) : (
+              // <></> 이거는 index같은걸 못가짐 그래서 React.Fragment 이걸씀
+              <React.Fragment key={index}>{word} </React.Fragment>
+            )
+          )}
+        </CommentCaption>
+      </div>
+      {isMine ? (
+        <Icon>
+          <FontAwesomeIcon onClick={onDeleteClick} icon={faTimes} size="sm" />
+        </Icon>
+      ) : null}
 
       {/* <CommentCaption>
         {payload.split(" ").map((word, index) =>

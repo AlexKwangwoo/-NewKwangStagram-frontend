@@ -1,12 +1,13 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import Photo from "../components/feed/Photo";
 import PageTitle from "../components/PageTitle";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
 import { Slider as SliderFixed } from "infinite-react-carousel";
 import styled from "styled-components";
-import useUser from "../hooks/useUser";
 import { useEffect } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
+import { Link } from "react-router-dom";
+import useUser from "../hooks/useUser";
 
 const FEED_QUERY = gql`
   query seeFeed($offset: Int!) {
@@ -15,6 +16,7 @@ const FEED_QUERY = gql`
       user {
         username
         avatar
+        email
       }
       caption
       comments {
@@ -53,6 +55,22 @@ const ISME_QUERY = gql`
         username
         avatar
       }
+    }
+  }
+`;
+
+const FOLLOW_USER_MUTATION = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      ok
+    }
+  }
+`;
+
+const UNFOLLOW_USER_MUTATION = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      ok
     }
   }
 `;
@@ -264,23 +282,18 @@ const CustomScrollbars = (props) => (
 );
 
 function Home() {
+  const { data: userData } = useUser();
+
   const { data: isMe } = useQuery(ISME_QUERY);
   const { data: allUserFound } = useQuery(ALLUSER_QUERY);
+  const client = useApolloClient();
+
   const { data } = useQuery(FEED_QUERY, {
     variables: {
       offset: 0,
     },
+    refetchQueries: [{ query: ISME_QUERY, variables: null }],
   });
-
-  // const settings = {
-  //   slidesToShow: 7,
-  //   arrowsBlock: false,
-  //   autoplay: true,
-  //   autoplayScroll: 1,
-  //   autoplaySpeed: 600,
-  //   duration: 15000,
-  //   arrows: true,
-  // };
 
   const ShowSlide = (allUserFound) => {
     const settings2 = {
@@ -296,10 +309,14 @@ function Home() {
       <SliderFixed {...settings2}>
         {allUserFound?.allUser?.map((user) => (
           <SlideAvatar key={user.id}>
-            <CircleAvatarBox>
-              <CircleAvatar src={user?.avatar} />
-            </CircleAvatarBox>
-            <UserName>{user?.username}</UserName>
+            <Link to={`/users/${user?.username}`}>
+              <CircleAvatarBox>
+                <CircleAvatar src={user?.avatar} />
+              </CircleAvatarBox>
+            </Link>
+            <Link to={`/users/${user?.username}`}>
+              <UserName>{user?.username}</UserName>
+            </Link>
           </SlideAvatar>
         ))}
       </SliderFixed>
@@ -316,8 +333,96 @@ function Home() {
 
   // console.log("allUserFoundExceptMe", allUserFoundExceptMe);
 
-  console.log("isMe", isMe);
-  console.log("allUserFound", allUserFound);
+  // ------------------------------follow unFollow------------------------------
+  const unfollowUserUpdate = (username) => {
+    // 업데이트는 캐쉬를 가져올수있음!
+
+    const { cache } = client;
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        isFollowing(prev) {
+          return false;
+        },
+        totalFollowers(prev) {
+          return prev - 1;
+        },
+      },
+    });
+
+    const { me } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev - 1;
+        },
+      },
+    });
+  };
+
+  const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
+    refetchQueries: [{ query: ISME_QUERY, variables: null }],
+
+    // refetchQueries: [{ query: SEE_PROFILE_QUERY, variables: { username } }],
+    // 리페치 방법
+  });
+
+  const followUserCompleted = (username) => {
+    // const {
+    //   followUser: { ok },
+    // } = data;
+    // console.log("캐쉬data", data);
+    // console.log("캐쉬data username", username);
+    // if (!ok) {
+    //   return;
+    // }
+    const { cache } = client;
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        isFollowing(prev) {
+          return true;
+        },
+        totalFollowers(prev) {
+          return prev + 1;
+        },
+      },
+    });
+
+    const { me } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev + 1;
+        },
+      },
+    });
+  };
+  const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
+    refetchQueries: [{ query: ISME_QUERY, variables: null }],
+    // onCompleted: followUserCompleted,
+    // refetchQueries: [{ query: SEE_PROFILE_QUERY, variables: { username } }],
+    // 리페치 방법
+  });
+
+  const UnFollowBTN = (username) => {
+    // console.log("unfollow");
+    unfollowUser({ variables: { username } });
+    unfollowUserUpdate(username);
+    return null;
+  };
+
+  const FollowBTN = (username) => {
+    // console.log("follow");
+    followUser({ variables: { username } });
+    followUserCompleted(username);
+    return null;
+  };
+
+  // console.log("data", data);
+
   return (
     <HomeContainer>
       <PageTitle title="Home" />
@@ -347,11 +452,15 @@ function Home() {
       <Right>
         <RightInside>
           <Me>
-            <LeftSideAvatar src={isMe?.me?.avatar} />
-            <LeftSideMyInfoBox>
-              <LeftSideMyName>{isMe?.me?.username}</LeftSideMyName>
-              <LeftSideMyEmail>{isMe?.me?.email}</LeftSideMyEmail>
-            </LeftSideMyInfoBox>
+            <Link to={`/users/${isMe?.me?.username}`}>
+              <LeftSideAvatar src={isMe?.me?.avatar} />
+            </Link>
+            <Link to={`/users/${isMe?.me?.username}`}>
+              <LeftSideMyInfoBox>
+                <LeftSideMyName>{isMe?.me?.username}</LeftSideMyName>
+                <LeftSideMyEmail>{isMe?.me?.email}</LeftSideMyEmail>
+              </LeftSideMyInfoBox>{" "}
+            </Link>
           </Me>
           <Suggestions>
             <SuggestionText>Suggestion For You</SuggestionText>
@@ -362,33 +471,71 @@ function Home() {
                 autoHideTimeout={500}
                 autoHideDuration={200}
               >
-                {isMe?.me?.followers.length >= 6
+                {isMe?.me?.followers?.length >= 7
                   ? isMe?.me?.followers?.map((follower) => (
                       <FollowerBox key={follower.id}>
                         <FollowerLeft>
-                          <SuggestionAvatar src={follower.avatar} />
+                          <Link to={`/users/${follower.username}`}>
+                            <SuggestionAvatar src={follower.avatar} />
+                          </Link>
                           <SuggestionInfo>
-                            <SuggestionUsername>
-                              {follower.username}
-                            </SuggestionUsername>
+                            <Link to={`/users/${follower.username}`}>
+                              <SuggestionUsername>
+                                {follower.username}
+                              </SuggestionUsername>
+                            </Link>
                             <SuggestionLetter>Follows you</SuggestionLetter>
                           </SuggestionInfo>
                         </FollowerLeft>
-                        <FollowerRight>Follow</FollowerRight>
+                        {isMe?.me?.following.filter(
+                          (myFollowing) =>
+                            myFollowing.username === follower.username
+                        ).length > 0 ? (
+                          <FollowerRight
+                            onClick={() => UnFollowBTN(follower.username)}
+                          >
+                            Unfollow
+                          </FollowerRight>
+                        ) : (
+                          <FollowerRight
+                            onClick={() => FollowBTN(follower.username)}
+                          >
+                            Follow
+                          </FollowerRight>
+                        )}
                       </FollowerBox>
                     ))
-                  : allUserFound?.allUser?.map((follower) => (
-                      <FollowerBox key={follower.id}>
+                  : allUserFound?.allUser?.map((otherUser) => (
+                      <FollowerBox key={otherUser.id}>
                         <FollowerLeft>
-                          <SuggestionAvatar src={follower.avatar} />
+                          <Link to={`/users/${otherUser.username}`}>
+                            <SuggestionAvatar src={otherUser.avatar} />{" "}
+                          </Link>
                           <SuggestionInfo>
-                            <SuggestionUsername>
-                              {follower.username}
-                            </SuggestionUsername>
+                            <Link to={`/users/${otherUser.username}`}>
+                              <SuggestionUsername>
+                                {otherUser.username}
+                              </SuggestionUsername>{" "}
+                            </Link>
                             <SuggestionLetter>Follows you</SuggestionLetter>
                           </SuggestionInfo>
                         </FollowerLeft>
-                        <FollowerRight>Follow</FollowerRight>
+                        {isMe?.me?.following.filter(
+                          (myFolloweing) =>
+                            myFolloweing.username === otherUser.username
+                        ).length > 0 ? (
+                          <FollowerRight
+                            onClick={() => UnFollowBTN(otherUser.username)}
+                          >
+                            Unfollow
+                          </FollowerRight>
+                        ) : (
+                          <FollowerRight
+                            onClick={() => FollowBTN(otherUser.username)}
+                          >
+                            Follow
+                          </FollowerRight>
+                        )}
                       </FollowerBox>
                     ))}
               </CustomScrollbars>

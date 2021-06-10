@@ -177,8 +177,11 @@ export default Login; <-위에랑 이거는 똑같은 형식임
 34. 배포!! 매우쉽다
 
     - 넬리파이가서 새로운앱 만든다
-    - Build Command는 CI= npm run build 이여야한다 넷리파이 어플만들때!!
+    - Build Command는 CI= npm run build 이여야한다 넷리파이 어플만들때!! 홈페이지에 적어야함!
     - publish directory 는 build/ 로 바꿔준다!
+
+    ***
+
     - 환경변수 설정을해줘야한다!
       아폴로js 가서 uri:
       process.env.NODE_ENV === "production"
