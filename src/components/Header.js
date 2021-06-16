@@ -130,7 +130,7 @@ function Header() {
                   <FontAwesomeIcon icon={faPaperPlane} size="lg" />
                 </Icon>{" "}
               </Link>
-              <Link to={"/"}>
+              <Link to={"/explore"}>
                 <Icon>
                   <FontAwesomeIcon icon={faCompass} size="lg" />
                 </Icon>

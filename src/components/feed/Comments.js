@@ -4,8 +4,8 @@ import Comment from "./Comment";
 import { useForm } from "react-hook-form";
 import { gql, useMutation } from "@apollo/client";
 import useUser from "../../hooks/useUser";
-import ModalScreen from "../ModalScreen";
 import { useState } from "react";
+import ModalScreen from "../ModalScreen";
 import Modal from "react-awesome-modal";
 
 const CREATE_COMMENT_MUTATION = gql`

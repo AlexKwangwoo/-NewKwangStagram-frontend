@@ -8,7 +8,7 @@ import {
   faBorderAll,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Button2 from "../components/auth/Button2";
@@ -16,6 +16,8 @@ import PageTitle from "../components/PageTitle";
 import { FatText } from "../components/shared";
 import { PHOTO_FRAGMENT } from "../fragments";
 import useUser, { ME_QUERY } from "../hooks/useUser";
+import ModalScreenForProfile from "../components/ModalScreenForProfile";
+import Modal from "react-awesome-modal";
 
 const FOLLOW_USER_MUTATION = gql`
   mutation followUser($username: String!) {
@@ -33,6 +35,15 @@ const UNFOLLOW_USER_MUTATION = gql`
   }
 `;
 
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!) {
     seeProfile(username: $username) {
@@ -44,7 +55,21 @@ const SEE_PROFILE_QUERY = gql`
       bio
       avatar
       photos {
-        ...PhotoFragment
+        id
+        file
+        likes
+        commentNumber
+        isLiked
+        comments {
+          id
+          user {
+            username
+            avatar
+          }
+          payload
+          isMine
+          createdAt
+        }
       }
       totalFollowing
       totalFollowers
@@ -55,7 +80,6 @@ const SEE_PROFILE_QUERY = gql`
       isFollowing
     }
   }
-  ${PHOTO_FRAGMENT}
 `;
 
 const ISME_QUERY = gql`
@@ -79,6 +103,7 @@ const ISME_QUERY = gql`
 
 const ProfileContainer = styled.div`
   padding-top: 60px;
+  margin-bottom: 80px;
 `;
 const Header = styled.div`
   display: flex;
@@ -204,7 +229,15 @@ const FirstRow = styled.div`
   justify-content: space-between;
 `;
 
-const LogoutBtn = styled.button``;
+const LogoutBtn = styled.button`
+  background-color: white;
+  border: 1px solid #dfdfdf;
+  color: #aaacaf;
+  border-radius: 3px;
+  font-size: 11px;
+  padding: 5px 10px 5px 10px;
+  cursor: pointer;
+`;
 
 const ProfileBtn = styled(Button2).attrs({
   as: "span",
@@ -220,6 +253,11 @@ const BioBox = styled.div`
 `;
 
 function Profile() {
+  const [isLikedState, setIsLikedState] = useState();
+  const [fileState, setFileState] = useState();
+  const [photoIdState, setPhotoIdState] = useState();
+  const [commentsState, setComentsState] = useState();
+
   const { username } = useParams();
   const { data: userData } = useUser();
   const client = useApolloClient();
@@ -229,6 +267,51 @@ function Profile() {
       username,
     },
   });
+
+  const updateToggleLike = (cache, result) => {
+    //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
+    console.log("실행됨");
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      const photoId = `Photo:${photoIdState}`;
+      // console.log("캐쉬내부", cache);
+      // console.log("photoIdState", photoIdState);
+      setIsLikedState(!isLikedState);
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked(prev) {
+            //prev 현재 isLiked의 불린값!
+            //필드 이름을 똑같이 써주고 필드이름+(prev) 를통해 이전값을 조정가능!
+            //무조건 같은 이름에 +(prev)를 써줘야한다!
+            return !prev;
+          },
+          likes(prev) {
+            //prev likes 갯수!
+            if (isLikedState) {
+              // 좋아했다면 한번누르면 반대는 -1
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
+    // variables: {
+    //   photoIdState,
+    // },
+    update: updateToggleLike,
+    // refetchQueries
+  });
+
+  console.log("profileData", data);
 
   const { data: isMeQueryData, loading: isMeQueryDataLoading } =
     useQuery(ISME_QUERY);
@@ -342,6 +425,24 @@ function Profile() {
     window.location.assign("/");
   };
 
+  const [visible, setVisible] = useState(false);
+  const openModal = (photo) => {
+    document.body.style.overflow = "hidden";
+    // console.log("photo정보", photo);
+    setVisible(true);
+    setIsLikedState(photo.isLiked);
+    setFileState(photo.file);
+    setPhotoIdState(photo.id);
+    setComentsState(photo.comments);
+    // toggleLikeMutation({
+    //   variables: { id: photoIdState },
+    // });
+  };
+  const closeModal = () => {
+    document.body.style.overflow = "unset";
+    setVisible(false);
+  };
+
   return (
     <ProfileContainer>
       <PageTitle
@@ -397,7 +498,11 @@ function Profile() {
 
       <Grid>
         {data?.seeProfile?.photos.map((photo) => (
-          <Photo key={photo.id} bg={photo.file}>
+          <Photo
+            key={photo.id}
+            bg={photo.file}
+            onClick={() => openModal(photo)}
+          >
             <Icons>
               <Icon>
                 <FontAwesomeIcon icon={faHeart} />
@@ -411,6 +516,24 @@ function Profile() {
           </Photo>
         ))}
       </Grid>
+      <Modal
+        visible={visible}
+        width="930"
+        height="600"
+        effect="fadeInUp"
+        onClickAway={() => closeModal()}
+      >
+        <ModalScreenForProfile
+          visible={visible}
+          photoId={photoIdState}
+          user={userData?.me}
+          file={fileState}
+          comments={commentsState}
+          isLiked={isLikedState}
+          setComentsState={setComentsState}
+          toggleLikeMutation={toggleLikeMutation}
+        />
+      </Modal>
     </ProfileContainer>
   );
 }

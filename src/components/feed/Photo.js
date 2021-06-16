@@ -13,6 +13,10 @@ import Avatar from "../Avatar";
 import { FatText } from "../shared";
 import Comments from "./Comments";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import useUser from "../../hooks/useUser";
+import ModalScreen from "../ModalScreen";
+import Modal from "react-awesome-modal";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -114,6 +118,7 @@ function Photo({
   commentNumber,
   comments,
 }) {
+  const { data: userData } = useUser();
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
     const {
@@ -178,6 +183,17 @@ function Photo({
     update: updateToggleLike,
     // refetchQueries
   });
+
+  const [visible, setVisible] = useState(false);
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    setVisible(true);
+  };
+  const closeModal = () => {
+    document.body.style.overflow = "unset";
+    setVisible(false);
+  };
+
   return (
     <PhotoContainer key={id}>
       <PhotoHeader>
@@ -202,8 +218,24 @@ function Photo({
                 />
               </PhotoAction>
               <PhotoAction>
-                <FontAwesomeIcon icon={faComment} />
+                <FontAwesomeIcon onClick={openModal} icon={faComment} />
               </PhotoAction>
+              <Modal
+                visible={visible}
+                width="930"
+                height="600"
+                effect="fadeInUp"
+                onClickAway={() => closeModal()}
+              >
+                <ModalScreen
+                  photoId={id}
+                  user={userData?.me}
+                  file={file}
+                  comments={comments}
+                  isLiked={isLiked}
+                  toggleLikeMutation={toggleLikeMutation}
+                />
+              </Modal>
               <PhotoAction>
                 <FontAwesomeIcon icon={faPaperPlane} />
               </PhotoAction>

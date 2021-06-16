@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 import useUser from "../hooks/useUser";
 
 const FEED_QUERY = gql`
-  query seeFeed($offset: Int!) {
-    seeFeed(offset: $offset) {
+  query seeFeedNoOffset {
+    seeFeedNoOffset {
       ...PhotoFragment
       user {
         username
@@ -289,9 +289,6 @@ function Home() {
   const client = useApolloClient();
 
   const { data } = useQuery(FEED_QUERY, {
-    variables: {
-      offset: 0,
-    },
     refetchQueries: [{ query: ISME_QUERY, variables: null }],
   });
 
@@ -444,7 +441,7 @@ function Home() {
           </SlideOnTopSpace>
         )} */}
 
-        {data?.seeFeed?.map((photo) => (
+        {data?.seeFeedNoOffset?.map((photo) => (
           <Photo key={photo.id} {...photo} />
         ))}
       </Left>

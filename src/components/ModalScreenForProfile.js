@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 // import { toast } from "react-toastify";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -126,7 +126,6 @@ const DivTwo = styled.div`
 
 const ScrollBox = styled.div`
   /* background-color: red; */
-  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -253,15 +252,23 @@ const CREATE_COMMENT_MUTATION = gql`
   }
 `;
 
-const ModalScreen = ({
+const ModalScreenForProfile = ({
   user,
   file,
   comments,
   isLiked,
   toggleLikeMutation,
   photoId,
+  setComentsState,
+  visible,
 }) => {
   const { register, handleSubmit, setValue, getValues } = useForm();
+  const [newComments, setNewComments] = useState([]);
+
+  // console.log("comments", comments);
+  useEffect(() => {
+    setNewComments([]);
+  }, [visible]);
   const createCommentUpdate = (cache, result) => {
     const { payload } = getValues();
     setValue("payload", "");
@@ -288,6 +295,10 @@ const ModalScreen = ({
           ...user,
         },
       }; //6가지 똑같이 적어줌..inspect의 apollo 캐쉬랑
+      // console.log("추가되었는지newComment상태", newComment);
+      const prevComments = newComments;
+      setNewComments([...prevComments, newComment]);
+      // console.log("추가되었는지comments상태", comments);
 
       const newCacheComment = cache.writeFragment({
         //newCacheComment console.log하면 __ref:comment10 이렇게나옴
@@ -320,7 +331,6 @@ const ModalScreen = ({
         id: `Photo:${photoId}`,
         fields: {
           comments(prev) {
-            console.log("prev", prev);
             return [...prev, newCacheComment];
             //newCacheComment console.log하면 __ref:comment10 이렇게나오는걸 추가하는것임
           },
@@ -351,6 +361,8 @@ const ModalScreen = ({
       },
     });
   };
+
+  console.log("isLiked", isLiked);
 
   return (
     <div>
@@ -387,6 +399,19 @@ const ModalScreen = ({
                       </DivBox>
                     </CommentBox>
                   ))}
+                {newComments.map((comment, index) => (
+                  <CommentBox key={index}>
+                    <Box>
+                      <CircleAvatar src={comment?.user?.avatar} />
+                    </Box>
+                    <DivBox>
+                      <AText>{comment?.user?.username}</AText>
+                      <Text>
+                        <CommentText>{comment?.payload}</CommentText>
+                      </Text>
+                    </DivBox>
+                  </CommentBox>
+                ))}
               </ScrollBox>
             </CustomScrollbars>
           </DivTwo>
@@ -396,7 +421,9 @@ const ModalScreen = ({
                 <FontAwesomeIcon
                   style={{ color: isLiked ? "tomato" : "inherit" }}
                   icon={isLiked ? SolidHeart : faHeart}
-                  onClick={toggleLikeMutation}
+                  onClick={() =>
+                    toggleLikeMutation({ variables: { id: photoId } })
+                  }
                   size="2x"
                 />
               </Icon>
@@ -426,4 +453,4 @@ const ModalScreen = ({
   );
 };
 
-export default ModalScreen;
+export default ModalScreenForProfile;
