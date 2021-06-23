@@ -9,11 +9,14 @@ import { faHome, faPlane, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { isLoggedInVar } from "../apollo";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import useUser from "../hooks/useUser";
 import routes from "../routes";
 import Avatar from "./Avatar";
 import letter from "../asset/letterB.png";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import NotificationScreen from "./NotificationScreen";
 
 const SHeader = styled.header`
   top: 0;
@@ -28,9 +31,11 @@ const SHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: center;
+  /* margin: auto; */
 `;
 
 const Wrapper = styled.div`
+  position: absolute;
   max-width: 930px;
   width: 100%;
   display: flex;
@@ -77,7 +82,7 @@ const Input = styled.input`
     font-size: 12px;
     text-align: center;
     color: #aaacaf;
-    padding-left: 20px;
+    padding-left: 10px;
   }
   &:focus {
     border-color: rgb(38, 38, 38);
@@ -97,9 +102,87 @@ const IconSearch = styled.div`
   color: #aaacaf;
 `;
 
+const NotificationBox = styled.div`
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: 500px;
+  height: 300px;
+`;
+
+const Line = styled.div`
+  width: 10px;
+  height: 10px;
+  /* padding-bottom: -20px; */
+  margin-left: auto;
+  margin-top: 8px;
+  margin-right: 49px;
+  transform: rotate(45deg);
+  border-top: 2px #d9dcdf solid;
+  border-left: 2px #d9dcdf solid;
+  border-bottom: none;
+  border-right: none;
+  background-color: white;
+  z-index: 10;
+  /* box-shadow: 0px 0px 3px #aaacaf; */
+`;
+
+const Notification = styled.div`
+  margin-top: -3px;
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 3px #aaacaf;
+  background-color: white;
+`;
+
 function Header() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const history = useHistory();
+  const onCompleted = (data) => {};
+  const [selectHeader, setSelectHeader] = useState();
   const { data } = useUser();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = useForm({
+    mode: "onChange",
+  });
+
+  const onSubmitValid = (data) => {
+    const { searchWord } = getValues();
+    // console.log("data", data);
+    // console.log("searchWord", searchWord);
+    // const {
+    //   createAccount: { ok, error },
+    // } = data;
+    // if (!ok) {
+    //   return;
+    // }
+
+    history.push(`/search/${searchWord}`, {
+      searchWord,
+    });
+  };
+
+  const setSelectHeaderNone = () => {
+    setSelectHeader("");
+  };
+
+  const selectHeaderState = (header) => {
+    if (selectHeader === "heart") {
+      setSelectHeader("");
+    } else {
+      setSelectHeader("heart");
+    }
+  };
+
+  console.log(selectHeader);
 
   return (
     <SHeader>
@@ -111,36 +194,55 @@ function Header() {
         </Column>
         <Column>
           <SearchBox>
-            <IconSearch>
-              <FontAwesomeIcon icon={faSearch} size="md" />
-            </IconSearch>
-            <Input name="search" type="search" placeholder="Search" />
+            {watch("searchWord") === "" ? (
+              <IconSearch>
+                <FontAwesomeIcon icon={faSearch} size="md" />
+              </IconSearch>
+            ) : null}
+
+            <form onSubmit={handleSubmit(onSubmitValid)}>
+              <Input
+                ref={register({
+                  required: "Search Word Is Required.",
+                })}
+                // value={watch("searchWord")}
+                name="searchWord"
+                type="text"
+                // onChangeText={(text) => setValue("searchWord", text)}
+                placeholder="Search"
+                onChangeText={(text) => setValue("searchWord", text)}
+              />
+            </form>
           </SearchBox>
         </Column>
         <Column>
           {isLoggedIn ? (
             <IconsContainer>
-              <Link to={"/"}>
+              <Link to={"/"} onClick={() => setSelectHeaderNone()}>
                 <Icon>
                   <FontAwesomeIcon icon={faHome} size="lg" />
                 </Icon>
               </Link>
-              <Link to={"/"}>
+              <Link to={"/"} onClick={() => setSelectHeaderNone()}>
                 <Icon>
                   <FontAwesomeIcon icon={faPaperPlane} size="lg" />
                 </Icon>{" "}
               </Link>
-              <Link to={"/explore"}>
+              <Link to={"/explore"} onClick={() => setSelectHeaderNone()}>
                 <Icon>
                   <FontAwesomeIcon icon={faCompass} size="lg" />
                 </Icon>
               </Link>
-              <Link to={"/"}>
+              <Link>
                 <Icon>
-                  <FontAwesomeIcon icon={faHeart} size="lg" />
+                  <FontAwesomeIcon
+                    onClick={() => selectHeaderState("heart")}
+                    icon={faHeart}
+                    size="lg"
+                  />
                 </Icon>
               </Link>
-              <Icon>
+              <Icon onClick={() => setSelectHeaderNone()}>
                 <Link to={`/users/${data?.me?.username}`}>
                   <Avatar url={data?.me?.avatar} />
                 </Link>
@@ -152,6 +254,14 @@ function Header() {
             </Link>
           )}
         </Column>
+        {selectHeader === "heart" ? (
+          <NotificationBox>
+            <Line></Line>
+            <Notification>
+              <NotificationScreen setSelectHeaderNone={setSelectHeaderNone} />
+            </Notification>
+          </NotificationBox>
+        ) : null}
       </Wrapper>
     </SHeader>
   );

@@ -12,6 +12,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/Layout";
 import Profile from "./screens/Profile";
 import Explore from "./screens/Explore";
+import Search from "./screens/Search";
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -44,6 +45,26 @@ function App() {
                   <Login />
                 )}
               </Route>
+
+              <Route path={`/search/:searchWord`}>
+                {isLoggedIn ? (
+                  <Layout>
+                    <Search />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
+              </Route>
+              {/* 
+              <Route path={`/search/:searchWord`}>
+                {isLoggedIn ? (
+                  <Layout>
+                    <Search />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
+              </Route> */}
 
               {!isLoggedIn ? (
                 <Route path={routes.signUp}>

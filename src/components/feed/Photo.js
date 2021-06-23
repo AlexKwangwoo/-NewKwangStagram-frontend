@@ -186,6 +186,7 @@ function Photo({
 
   const [visible, setVisible] = useState(false);
   const openModal = () => {
+    console.log("실행할껀데..");
     document.body.style.overflow = "hidden";
     setVisible(true);
   };
@@ -218,7 +219,7 @@ function Photo({
                 />
               </PhotoAction>
               <PhotoAction>
-                <FontAwesomeIcon onClick={openModal} icon={faComment} />
+                <FontAwesomeIcon onClick={() => openModal()} icon={faComment} />
               </PhotoAction>
               <Modal
                 visible={visible}

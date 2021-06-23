@@ -14,26 +14,36 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ModalScreenForProfile from "../components/ModalScreenForProfile";
 import Modal from "react-awesome-modal";
 import useUser from "../hooks/useUser";
+import { useParams } from "react-router-dom";
 
-const FEED_NO_OFFSET_QUERY = gql`
-  query seeFeedNoOffset {
-    seeFeedNoOffset {
-      ...PhotoFragment
-      user {
-        username
-        avatar
-        email
-      }
-      caption
+const SEARCH_PHOTO_QUERY = gql`
+  query searchPhotos($keyword: String!) {
+    searchPhotos(keyword: $keyword) {
+      id
+      file
+      likes
+      commentNumber
+      isLiked
       comments {
-        ...CommentFragment
+        user {
+          username
+          avatar
+        }
+        payload
+        isMine
+        createdAt
       }
-      createdAt
-      isMine
     }
   }
-  ${PHOTO_FRAGMENT}
-  ${COMMENT_FRAGMENT}
+`;
+
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
 `;
 
 const Wrapper = styled.div`
@@ -104,25 +114,28 @@ const Photo = styled.div`
   position: relative;
 `;
 
-const TOGGLE_LIKE_MUTATION = gql`
-  mutation toggleLike($id: Int!) {
-    toggleLike(id: $id) {
-      ok
-      error
-    }
-  }
+const SearchBox = styled.div`
+  margin-top: 100px;
+  width: 100%;
+  background-color: red;
+  /* color: white; */
 `;
 
-function Explore() {
+function Search() {
+  const { searchWord } = useParams();
+  const { data, loading } = useQuery(SEARCH_PHOTO_QUERY, {
+    variables: {
+      keyword: searchWord,
+    },
+  });
+  console.log("data", data);
+
   const [isLikedState, setIsLikedState] = useState();
   const [fileState, setFileState] = useState();
   const [photoIdState, setPhotoIdState] = useState();
   const [commentsState, setComentsState] = useState();
   const [visible, setVisible] = useState(false);
   const { data: userData } = useUser();
-  const { data } = useQuery(FEED_NO_OFFSET_QUERY, {
-    // refetchQueries: [{ query: ISME_QUERY, variables: null }],
-  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -130,7 +143,7 @@ function Explore() {
 
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
-    // console.log("실행됨");
+    console.log("실행됨");
     const {
       data: {
         toggleLike: { ok },
@@ -188,9 +201,11 @@ function Explore() {
   };
 
   console.log("feedData", data);
+
+  // console.log("feedData", data);
   return (
     <Wrapper>
-      {data?.seeFeedNoOffset?.map((photo) => (
+      {data?.searchPhotos?.map((photo) => (
         <Grid>
           <Photo
             key={photo.id}
@@ -232,4 +247,4 @@ function Explore() {
     </Wrapper>
   );
 }
-export default Explore;
+export default Search;

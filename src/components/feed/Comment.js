@@ -102,7 +102,7 @@ function Comment({ id, photoId, isMine, author, payload }) {
               // test를 통해 #~ 이 포함된 단어를 false true로 추출해낸다
               <React.Fragment key={index}>
                 {/* true면 링크를 걸어줄것임! */}
-                <Link to={`/hashtags/${word}`}>{word} </Link>
+                <Link to={`/search/${word.split("#")[1]}`}>{word} </Link>
               </React.Fragment>
             ) : (
               // <></> 이거는 index같은걸 못가짐 그래서 React.Fragment 이걸씀

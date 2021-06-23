@@ -321,6 +321,10 @@ function Home() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     ShowSlide(allUserFound);
   }, [allUserFound]);
 
@@ -513,7 +517,16 @@ function Home() {
                                 {otherUser.username}
                               </SuggestionUsername>{" "}
                             </Link>
-                            <SuggestionLetter>Follows you</SuggestionLetter>
+                            {isMe?.me?.following.filter(
+                              (myFolloweing) =>
+                                myFolloweing.username === otherUser.username
+                            ).length > 0 ? (
+                              <SuggestionLetter>Follows you</SuggestionLetter>
+                            ) : (
+                              <SuggestionLetter>
+                                Recommend {otherUser.username}
+                              </SuggestionLetter>
+                            )}
                           </SuggestionInfo>
                         </FollowerLeft>
                         {isMe?.me?.following.filter(

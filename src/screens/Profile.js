@@ -268,6 +268,10 @@ function Profile() {
     },
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
     console.log("실행됨");

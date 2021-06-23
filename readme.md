@@ -53,8 +53,7 @@ export default Login; <-위에랑 이거는 똑같은 형식임
 
 13. react hook form쓰기위해서는 name이 필수이다..
 
-14. handleSubmit 는 첫번쨰인자는 유효한값.. 두번째값은 유효하지 않는값이 넘어올때 일어남 변수명은 아무
-    거나 괜찮음!!
+14. handleSubmit 는 첫번쨰인자는 유효한값.. 두번째값은 유효하지 않는값이 넘어올때 일어남 변수명은 아무거나 괜찮음!!
     <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}> 은 우리가 입력한거의 제출이
     유효한지 아닌지 검사한다! 유효하면 onSubmitValid 를 얻을 것이고, 유효안하면 onSubmitInvalid 을 얻을것임
      ref={register({

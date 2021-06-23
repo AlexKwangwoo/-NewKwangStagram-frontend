@@ -154,9 +154,11 @@ function Comments({
 
   const [visible, setVisible] = useState(false);
   const openModal = () => {
+    document.body.style.overflow = "hidden";
     setVisible(true);
   };
   const closeModal = () => {
+    document.body.style.overflow = "unset";
     setVisible(false);
   };
 
@@ -166,7 +168,7 @@ function Comments({
   return (
     <CommentsContainer>
       <Comment author={author} payload={caption} />
-      <CommentCount onClick={openModal}>
+      <CommentCount onClick={() => openModal()}>
         {commentNumber <= 1
           ? `${commentNumber} comment`
           : `Veiw All ${commentNumber} comments`}
