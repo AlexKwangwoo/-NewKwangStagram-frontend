@@ -70,7 +70,7 @@ export const client = new ApolloClient({
     //id가 적힌 어느곳이던 User관련된곳에서만 정보를 가져온다. 예를들어 useUser에서
     // id포함 User에 대한 정보를 avatar와 userName만 가져오면 캐쉬에는 두개만 저장된다!
     //밑에를 이용해 캐쉬에 User:rhhkddn3049 처럼 저장가능.. User:1 이 아니라!
-    //아폴로는 id가 unique키인줄 알고 자동으로 식별자를 설정한다!!!
+    //아폴로는 id가 unique키인줄 알고 자동으로 식별자를 설정한다!!!!
     typePolicies: {
       User: {
         keyFields: (obj) => `User:${obj.username}`,
