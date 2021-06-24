@@ -5,6 +5,7 @@ import {
   makeVar,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createUploadLink } from "apollo-upload-client";
 
 const TOKEN = "TOKEN";
 const DARK_MODE = "DARK_MODE";
@@ -37,6 +38,13 @@ export const disableDarkMode = () => {
   darkModeVar(false);
 };
 
+const uploadHttpLink = createUploadLink({
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://newkwangstagram-backend.herokuapp.com/graphql"
+      : "http://localhost:4000/graphql",
+});
+
 const httpLink = createHttpLink({
   uri:
     process.env.NODE_ENV === "production"
@@ -56,7 +64,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(uploadHttpLink),
   cache: new InMemoryCache({
     //이렇게 추가해줘야 캐쉬에 seeProfile할떄 id가 없어도 자동으로 저장해준다!
     //id가 적힌 어느곳이던 User관련된곳에서만 정보를 가져온다. 예를들어 useUser에서

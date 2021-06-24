@@ -192,6 +192,8 @@ const DivFour = styled.div`
   display: flex;
   padding-left: 20px;
   align-items: center;
+  background-color: white;
+  border-bottom-right-radius: 5px;
 `;
 
 const PostCommentContainer = styled.div`

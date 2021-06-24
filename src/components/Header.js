@@ -17,6 +17,7 @@ import letter from "../asset/letterB.png";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import NotificationScreen from "./NotificationScreen";
+import ProfileScreen from "./ProfileScreen";
 
 const SHeader = styled.header`
   top: 0;
@@ -136,6 +137,41 @@ const Notification = styled.div`
   background-color: white;
 `;
 
+const ProfileNotificationBox = styled.div`
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: 170px;
+  height: 100px;
+  /* background-color: yellow; */
+`;
+
+const ProfileLine = styled.div`
+  width: 10px;
+  height: 10px;
+  /* padding-bottom: -20px; */
+  margin-left: auto;
+  margin-top: 8px;
+  margin-right: 8px;
+  transform: rotate(45deg);
+  border-top: 1.2px #d9dcdf solid;
+  border-left: 1.2px #d9dcdf solid;
+  border-bottom: none;
+  border-right: none;
+  background-color: white;
+  z-index: 10;
+  /* box-shadow: 0px 0px 3px #aaacaf; */
+`;
+
+const ProfileNotification = styled.div`
+  margin-top: -4px;
+  width: 100%;
+  height: 80px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 3px #aaacaf;
+  background-color: white;
+`;
+
 function Header() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const history = useHistory();
@@ -182,8 +218,19 @@ function Header() {
     }
   };
 
+  const selectHeaderProfile = (profile) => {
+    if (selectHeader === "profile") {
+      setSelectHeader("");
+    } else {
+      setSelectHeader("profile");
+    }
+  };
+
   console.log(selectHeader);
 
+  const handleChange = (event) => {
+    setValue("searchWord", event.target.value);
+  };
   return (
     <SHeader>
       <Wrapper>
@@ -210,7 +257,7 @@ function Header() {
                 type="text"
                 // onChangeText={(text) => setValue("searchWord", text)}
                 placeholder="Search"
-                onChangeText={(text) => setValue("searchWord", text)}
+                onChange={handleChange}
               />
             </form>
           </SearchBox>
@@ -242,8 +289,11 @@ function Header() {
                   />
                 </Icon>
               </Link>
-              <Icon onClick={() => setSelectHeaderNone()}>
-                <Link to={`/users/${data?.me?.username}`}>
+              <Icon>
+                {/* <Link to={`/users/${data?.me?.username}`}>
+                  <Avatar url={data?.me?.avatar} />
+                </Link> */}
+                <Link onClick={() => selectHeaderProfile()}>
                   <Avatar url={data?.me?.avatar} />
                 </Link>
               </Icon>
@@ -261,6 +311,17 @@ function Header() {
               <NotificationScreen setSelectHeaderNone={setSelectHeaderNone} />
             </Notification>
           </NotificationBox>
+        ) : null}
+        {selectHeader === "profile" ? (
+          <ProfileNotificationBox>
+            <ProfileLine></ProfileLine>
+            <ProfileNotification>
+              <ProfileScreen
+                me={data?.me?.username}
+                setSelectHeaderNone={setSelectHeaderNone}
+              />
+            </ProfileNotification>
+          </ProfileNotificationBox>
         ) : null}
       </Wrapper>
     </SHeader>

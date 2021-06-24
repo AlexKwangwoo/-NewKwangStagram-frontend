@@ -193,6 +193,7 @@ const DivFour = styled.div`
   display: flex;
   padding-left: 20px;
   align-items: center;
+  /* background-color: white; */
 `;
 
 const PostCommentContainer = styled.div`
@@ -201,6 +202,7 @@ const PostCommentContainer = styled.div`
 
 const PostCommentInput = styled.input`
   width: 100%;
+  /* background-color: red; */
   &::placeholder {
     font-size: 13px;
   }

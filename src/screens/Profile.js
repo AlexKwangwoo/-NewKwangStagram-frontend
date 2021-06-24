@@ -18,6 +18,7 @@ import { PHOTO_FRAGMENT } from "../fragments";
 import useUser, { ME_QUERY } from "../hooks/useUser";
 import ModalScreenForProfile from "../components/ModalScreenForProfile";
 import Modal from "react-awesome-modal";
+import EditProfile from "./EditProfile";
 
 const FOLLOW_USER_MUTATION = gql`
   mutation followUser($username: String!) {
@@ -160,6 +161,7 @@ const Photo = styled.div`
   background-image: url(${(props) => props.bg});
   background-size: cover;
   position: relative;
+  cursor: pointer;
 `;
 const Icons = styled.div`
   position: absolute;
@@ -249,7 +251,9 @@ const ProfileBtn = styled(Button2).attrs({
 `;
 
 const BioBox = styled.div`
-  font-size: 18px;
+  font-size: 13px;
+  margin-top: 10px;
+  color: gray;
 `;
 
 function Profile() {
@@ -262,7 +266,7 @@ function Profile() {
   const { data: userData } = useUser();
   const client = useApolloClient();
 
-  const { data, loading } = useQuery(SEE_PROFILE_QUERY, {
+  const { data, loading, refetch } = useQuery(SEE_PROFILE_QUERY, {
     variables: {
       username,
     },
@@ -315,7 +319,7 @@ function Profile() {
     // refetchQueries
   });
 
-  console.log("profileData", data);
+  // console.log("profileData", data);
 
   const { data: isMeQueryData, loading: isMeQueryDataLoading } =
     useQuery(ISME_QUERY);
@@ -410,7 +414,9 @@ function Profile() {
   const getButton = (seeProfile) => {
     const { isMe, isFollowing, username } = seeProfile;
     if (isMe) {
-      return <ProfileBtn>Edit Profile</ProfileBtn>;
+      return (
+        <ProfileBtn onClick={() => openEditModal()}>Edit Profile</ProfileBtn>
+      );
     }
     if (
       isMeQueryData?.me?.following.filter(
@@ -429,7 +435,26 @@ function Profile() {
     window.location.assign("/");
   };
 
+  const [editVisible, setEditVisible] = useState(false);
+  const openEditModal = (photo) => {
+    document.body.style.overflow = "hidden";
+    // console.log("photo정보", photo);
+    setEditVisible(true);
+    // setIsLikedState(photo.isLiked);
+    // setFileState(photo.file);
+    // setPhotoIdState(photo.id);
+    // setComentsState(photo.comments);
+    // toggleLikeMutation({
+    //   variables: { id: photoIdState },
+    // });
+  };
+  const closeEditModal = () => {
+    document.body.style.overflow = "unset";
+    setEditVisible(false);
+  };
+
   const [visible, setVisible] = useState(false);
+
   const openModal = (photo) => {
     document.body.style.overflow = "hidden";
     // console.log("photo정보", photo);
@@ -488,7 +513,9 @@ function Profile() {
               {data?.seeProfile?.lastName}
             </Name>
           </Row>
-          <Row>{data?.seeProfile?.bio}</Row>
+          <Row>
+            <BioBox>{data?.seeProfile?.bio}</BioBox>
+          </Row>
           <LogoutBtn onClick={Logout}>Log out</LogoutBtn>
         </Column>
       </Header>
@@ -521,9 +548,23 @@ function Profile() {
         ))}
       </Grid>
       <Modal
+        visible={editVisible}
+        width="350"
+        height="550"
+        effect="fadeInUp"
+        onClickAway={() => closeEditModal()}
+      >
+        <EditProfile
+          user={userData?.me}
+          refetch={refetch}
+          closeEditModal={closeEditModal}
+        />
+      </Modal>
+
+      <Modal
         visible={visible}
         width="930"
-        height="600"
+        height="550"
         effect="fadeInUp"
         onClickAway={() => closeModal()}
       >

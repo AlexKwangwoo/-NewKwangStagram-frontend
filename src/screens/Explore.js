@@ -102,6 +102,7 @@ const Photo = styled.div`
   background-image: url(${(props) => props.bg});
   background-size: cover;
   position: relative;
+  cursor: pointer;
 `;
 
 const TOGGLE_LIKE_MUTATION = gql`
