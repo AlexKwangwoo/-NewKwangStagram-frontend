@@ -189,6 +189,10 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     - 배포가 되고.. 사인업 가서 새로고침하면 페이지 에러가 뜬다!
     - 저걸 해결하기위해 \_redirect 페이지를 public에 만들어준다!
     - 다시 배포하기위해서는 넷리파이 가서 연동시켜주면된다!
+    - 그다음 똑같이
+    - git add.
+    - git commit -m "sdfkljsdlkfj"
+    - git push origin master 하면된다!
 
 35. 스크롤바
     npm install react-custom-scrollbars --save
