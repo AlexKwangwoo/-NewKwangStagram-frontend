@@ -123,7 +123,7 @@ const Input = styled.input`
   background-color: #fafafa;
   /* border: 0.5px solid
     ${(props) => (props.hasError ? "tomato" : props.theme.borderColor)}; */
-  /* 만약 애러가있다면 빨간색 테두리!! */
+  /* 만약 애러가있다면 빨간색 테두리!!!!! */
   border: 0.5px solid #cccbcb;
   margin-bottom: 15px;
   margin-top: 5px;
