@@ -16,10 +16,12 @@ import {
   faHome,
   faOutdent,
   faPersonBooth,
+  faPhotoVideo,
   faPlane,
   faSearch,
   faSignInAlt,
   faSignOutAlt,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -32,24 +34,39 @@ const ProfileContainer = styled.div`
 const Icon = styled.span`
   cursor: point;
 `;
+const UploadIcon = styled.span`
+  cursor: point;
+`;
 
 const ProfileFirstBox = styled.div`
-  height: 50%;
+  height: 33%;
   display: flex;
   align-items: center;
   /* background-color: yellow; */
-  border-bottom: #edebeb solid 1px;
+
   padding: 0px 10px;
   &:hover {
     background-color: #f7f7f7;
   }
 `;
+const ProfileFirstNextBox = styled.div`
+  height: 33%;
+  display: flex;
+  align-items: center;
+  /* background-color: yellow; */
+  padding: 0px 10px;
+  &:hover {
+    background-color: #f7f7f7;
+  }
+`;
+
 const ProfileSecondBox = styled.div`
-  height: 50%;
+  height: 33%;
   display: flex;
   align-items: center;
   /* background-color: blue; */
   padding: 0px 10px;
+  border-top: #edebeb solid 1px;
   &:hover {
     background-color: #f7f7f7;
   }
@@ -59,12 +76,22 @@ const Title = styled.text`
   margin-left: 10px;
 `;
 
+const UploadTitle = styled.text`
+  margin-left: 9.5px;
+`;
+
 function ProfileScreen({ setSelectHeaderNone, me }) {
   const history = useHistory();
   const client = useApolloClient();
   const goToProfile = (username) => {
     setSelectHeaderNone();
     history.push(`/users/${me}`);
+  };
+
+  const goToUploadPhoto = () => {
+    setSelectHeaderNone();
+    // window.location.search = "ModalOpen";
+    window.location.assign(`/users/${me}?upload=true`);
   };
 
   const LogOut = () => {
@@ -86,6 +113,18 @@ function ProfileScreen({ setSelectHeaderNone, me }) {
           </Icon>
         </Link>
       </ProfileFirstBox>
+      <ProfileFirstNextBox>
+        <Link onClick={() => goToUploadPhoto()}>
+          <UploadIcon>
+            <FontAwesomeIcon
+              onClick={() => setSelectHeaderNone("heart")}
+              icon={faUpload}
+              size="lg"
+            />
+            <UploadTitle>Upload Photo</UploadTitle>
+          </UploadIcon>
+        </Link>
+      </ProfileFirstNextBox>
       <ProfileSecondBox>
         <Link onClick={() => LogOut()}>
           <Icon>

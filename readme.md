@@ -193,6 +193,8 @@ export default Login; <-위에랑 이거는 똑같은 형식임
     - git add.
     - git commit -m "sdfkljsdlkfj"
     - git push origin master 하면된다!
+      만약에 error apollo-upload-client@16.0.0: The engine "node" is incompatible with this module. Expected version "^12.20 || >= 14.13". Got "12.18.0" 뜬다면 nelify에서
+      환경변수 가서 NODE_VERSION 치고 값에 12.20 이상값을 넣으면 해결됨!
 
 35. 스크롤바
     npm install react-custom-scrollbars --save

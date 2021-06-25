@@ -166,7 +166,7 @@ const ProfileLine = styled.div`
 const ProfileNotification = styled.div`
   margin-top: -4px;
   width: 100%;
-  height: 80px;
+  height: 120px;
   border-radius: 3px;
   box-shadow: 0px 0px 3px #aaacaf;
   background-color: white;
@@ -226,7 +226,7 @@ function Header() {
     }
   };
 
-  console.log(selectHeader);
+  // console.log(selectHeader);
 
   const handleChange = (event) => {
     setValue("searchWord", event.target.value);
@@ -235,7 +235,7 @@ function Header() {
     <SHeader>
       <Wrapper>
         <Column>
-          <Link to={"/"}>
+          <Link to={"/"} onClick={() => setSelectHeaderNone()}>
             <LetterImg src={letter} />
           </Link>
         </Column>
@@ -270,7 +270,7 @@ function Header() {
                   <FontAwesomeIcon icon={faHome} size="lg" />
                 </Icon>
               </Link>
-              <Link to={"/"} onClick={() => setSelectHeaderNone()}>
+              <Link to={"/messageRooms"} onClick={() => setSelectHeaderNone()}>
                 <Icon>
                   <FontAwesomeIcon icon={faPaperPlane} size="lg" />
                 </Icon>{" "}

@@ -364,7 +364,7 @@ const ModalScreenForProfile = ({
     });
   };
 
-  console.log("isLiked", isLiked);
+  // console.log("isLiked", isLiked);
 
   return (
     <div>

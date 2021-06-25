@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Button2 from "../components/auth/Button2";
 import PageTitle from "../components/PageTitle";
@@ -19,6 +19,7 @@ import useUser, { ME_QUERY } from "../hooks/useUser";
 import ModalScreenForProfile from "../components/ModalScreenForProfile";
 import Modal from "react-awesome-modal";
 import EditProfile from "./EditProfile";
+import UploadPhoto from "./UploadPhoto";
 
 const FOLLOW_USER_MUTATION = gql`
   mutation followUser($username: String!) {
@@ -53,6 +54,7 @@ const SEE_PROFILE_QUERY = gql`
       firstName
       lastName
       username
+      email
       bio
       avatar
       photos {
@@ -239,6 +241,11 @@ const LogoutBtn = styled.button`
   font-size: 11px;
   padding: 5px 10px 5px 10px;
   cursor: pointer;
+  margin-right: 10px;
+  &:hover {
+    background: #e5e5e5;
+    color: black;
+  }
 `;
 
 const ProfileBtn = styled(Button2).attrs({
@@ -248,6 +255,9 @@ const ProfileBtn = styled(Button2).attrs({
   cursor: pointer;
   padding: 10px 5px;
   font-size: 13px;
+  &:hover {
+    background: #006bb3;
+  }
 `;
 
 const BioBox = styled.div`
@@ -264,21 +274,28 @@ function Profile() {
 
   const { username } = useParams();
   const { data: userData } = useUser();
-  const client = useApolloClient();
+  const [editVisible, setEditVisible] = useState(false);
 
+  const client = useApolloClient();
+  const location = useLocation();
   const { data, loading, refetch } = useQuery(SEE_PROFILE_QUERY, {
     variables: {
       username,
     },
   });
 
+  const result = window.location;
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (result.search === "?upload=true") {
+      openUploadModal();
+    }
   }, []);
 
   const updateToggleLike = (cache, result) => {
     //update가 되면 여기가 실행될것임.. 마치 onComplete처럼
-    console.log("실행됨");
+    // console.log("실행됨");
     const {
       data: {
         toggleLike: { ok },
@@ -309,6 +326,10 @@ function Profile() {
         },
       });
     }
+  };
+
+  const uploadPhotoBtn = () => {
+    openUploadModal();
   };
 
   const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
@@ -435,7 +456,6 @@ function Profile() {
     window.location.assign("/");
   };
 
-  const [editVisible, setEditVisible] = useState(false);
   const openEditModal = (photo) => {
     document.body.style.overflow = "hidden";
     // console.log("photo정보", photo);
@@ -470,6 +490,19 @@ function Profile() {
   const closeModal = () => {
     document.body.style.overflow = "unset";
     setVisible(false);
+  };
+
+  const [uploadVisible, setUploadVisible] = useState(false);
+
+  const openUploadModal = (photo) => {
+    document.body.style.overflow = "hidden";
+
+    setUploadVisible(true);
+  };
+
+  const closeUploadModal = () => {
+    document.body.style.overflow = "unset";
+    setUploadVisible(false);
   };
 
   return (
@@ -517,6 +550,7 @@ function Profile() {
             <BioBox>{data?.seeProfile?.bio}</BioBox>
           </Row>
           <LogoutBtn onClick={Logout}>Log out</LogoutBtn>
+          <LogoutBtn onClick={() => uploadPhotoBtn()}>Upload Photo</LogoutBtn>
         </Column>
       </Header>
       <LineU />
@@ -548,6 +582,16 @@ function Profile() {
         ))}
       </Grid>
       <Modal
+        visible={uploadVisible}
+        width="350"
+        height="230"
+        effect="fadeInUp"
+        onClickAway={() => closeUploadModal()}
+      >
+        <UploadPhoto refetch={refetch} closeUploadModal={closeUploadModal} />
+      </Modal>
+
+      <Modal
         visible={editVisible}
         width="350"
         height="550"
@@ -571,7 +615,7 @@ function Profile() {
         <ModalScreenForProfile
           visible={visible}
           photoId={photoIdState}
-          user={userData?.me}
+          user={data?.seeProfile}
           file={fileState}
           comments={commentsState}
           isLiked={isLikedState}

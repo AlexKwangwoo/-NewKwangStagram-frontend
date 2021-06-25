@@ -13,6 +13,8 @@ import Layout from "./components/Layout";
 import Profile from "./screens/Profile";
 import Explore from "./screens/Explore";
 import Search from "./screens/Search";
+import UploadPhoto from "./screens/UploadPhoto";
+import MessageRooms from "./screens/MessageRooms";
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -46,6 +48,16 @@ function App() {
                 )}
               </Route>
 
+              <Route path={routes.messageRooms} exact>
+                {isLoggedIn ? (
+                  <Layout>
+                    <MessageRooms />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
+              </Route>
+
               <Route path={`/search/:searchWord`}>
                 {isLoggedIn ? (
                   <Layout>
@@ -73,10 +85,21 @@ function App() {
               ) : null}
 
               <Route path={`/users/:username`}>
+                {isLoggedIn ? (
+                  <Layout>
+                    <Profile />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
+              </Route>
+
+              {/* <Route path={`/users/:username`}>
                 <Layout>
                   <Profile />
                 </Layout>
-              </Route>
+              </Route> */}
+
               <Route>
                 {/* 위에서 맞는게 없이면 NotFound가 실행될것임 마지막에 넣어주는것이 중요함..*/}
                 {/* 이것도 아니고 저것도 아닐때 여기로 오기때문 */}
