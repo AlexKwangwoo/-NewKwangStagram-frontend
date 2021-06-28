@@ -62,9 +62,9 @@ const ScrollBox = styled.div`
   flex-direction: column;
 `;
 
-const Text = styled.div``;
+const TextContainer = styled.div``;
 
-const UserName = styled.text`
+const UserName = styled.span`
   font-weight: 600;
 `;
 
@@ -122,12 +122,12 @@ function NotificationScreen({ setSelectHeaderNone }) {
           <Title>Notification</Title>
           <NotificationContents>
             {data?.seeFeedNoOffset.map((photo) => (
-              <ListContainer>
+              <ListContainer key={photo.id}>
                 <CircleAvatar src={photo.user.avatar}></CircleAvatar>
-                <Text>
+                <TextContainer>
                   <UserName>{photo.user.username}</UserName> uploaded photo
                   <Date> {formatDate(photo.createdAt)}</Date>
-                </Text>
+                </TextContainer>
                 <CheckButton onClick={() => goToProfile(photo.user.username)}>
                   Check Profile
                 </CheckButton>

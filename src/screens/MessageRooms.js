@@ -115,6 +115,9 @@ const RoomContatiner = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  background-color: ${(props) =>
+    props.username === props.selectedName ? "#f7f7f7" : "white"};
+
   &:hover {
     background-color: #f7f7f7;
   }
@@ -330,6 +333,7 @@ function MessageRooms() {
   const [selectedPerson, setSelectedPerson] = useState("");
   const [selectedPersonId, setSelectedPersonId] = useState("");
   const [selectedDetail, setSelectedDetail] = useState("");
+  const [selectedPersonForColor, setSelectedPersonForColor] = useState();
 
   const [
     createRoomMutation,
@@ -362,8 +366,17 @@ function MessageRooms() {
   // console.log("allUserFound", allUserFound);
   // console.log("SEE_ROOMS_QUERY", data);
 
+  const selectColor = (username) => {
+    setSelectedPersonForColor(username);
+  };
+
   const selectMessageRoom = (room) => {
     setMessageRoom(room);
+  };
+
+  const selectMessageRoomTogether = (room, username) => {
+    setMessageRoom(room);
+    selectColor(username);
   };
 
   const [visible, setVisible] = useState(false);
@@ -444,6 +457,8 @@ function MessageRooms() {
     setSelectedDetail("");
   };
 
+  console.log("selectedPersonForColor", selectedPersonForColor);
+
   return (
     <MessageRoomsContainer>
       <LeftBox>
@@ -465,7 +480,14 @@ function MessageRooms() {
             {data?.seeRooms?.map((room) => (
               <div key={room.id}>
                 {room.users[0].username === userData?.me?.username ? (
-                  <RoomContatiner onClick={() => selectMessageRoom(room)}>
+                  <RoomContatiner
+                    selectedName={selectedPersonForColor}
+                    username={room.users[1].username}
+                    // same={room.users[1].username === selectedPerson}
+                    onClick={() =>
+                      selectMessageRoomTogether(room, room.users[1].username)
+                    }
+                  >
                     <CircleAvatar src={room.users[1].avatar}></CircleAvatar>
                     <UserInfo>
                       <MessageUserName>
@@ -477,7 +499,11 @@ function MessageRooms() {
                 ) : (
                   <RoomContatiner
                     key={room.id}
-                    onClick={() => selectMessageRoom(room)}
+                    selectedName={selectedPersonForColor}
+                    username={room.users[0].username}
+                    onClick={() =>
+                      selectMessageRoomTogether(room, room.users[0].username)
+                    }
                   >
                     <CircleAvatar src={room.users[0].avatar}></CircleAvatar>
                     <UserInfo>

@@ -237,8 +237,8 @@ function Login() {
                   required: "Username is required",
                   // required가 true가 되면 메시지가 안나가고 검사만함
                   minLength: {
-                    value: 5,
-                    message: "Username should be longer than 5 chars.",
+                    value: 3,
+                    message: "Username should be longer than 3 chars.",
                   },
                   //pattern : "", <-을통해 정규식 이용가능
                   // validate:(currentValue)=> currentValue.includes("@")

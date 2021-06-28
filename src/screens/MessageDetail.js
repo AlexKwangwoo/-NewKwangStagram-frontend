@@ -65,7 +65,6 @@ const MainBox = styled.div`
 const MessageDetailContainer = styled.div`
   width: 100%;
   height: 100%;
-  /* background-color: yellow; */
   display: flex;
   flex-direction: column;
 `;
@@ -111,7 +110,7 @@ const UserName = styled.div``;
 const RightBottom = styled.div`
   width: 100%;
   /* padding-left: 20px; */
-  padding-top: 2px;
+  padding-top: 15px;
   padding-bottom: 2px;
   height: calc(100% - 160px);
   overflow-x: hidden;
@@ -405,7 +404,7 @@ function MessageDetail({
             <MemberLetter>Members</MemberLetter>
             <MembersContainer>
               {seeRoomQuery?.seeRoom?.users.map((user) => (
-                <Link to={`/users/${user?.username}`}>
+                <Link to={`/users/${user?.username}`} key={user.id}>
                   <EachMemberContainer>
                     <CircleAvatarIndetail
                       src={user.avatar}

@@ -3,9 +3,16 @@ import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
   faCompass,
   faHeart,
+  faCalendar,
   faPaperPlane,
 } from "@fortawesome/free-regular-svg-icons";
-import { faHome, faPlane, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendar as faCalendarSolid,
+  faPaperPlane as faPaperPlaneSolid,
+  faSearch,
+  faCompass as faCompassSolid,
+  faHeart as faHeartSolid,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { isLoggedInVar } from "../apollo";
@@ -176,7 +183,10 @@ function Header() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const history = useHistory();
   const onCompleted = (data) => {};
-  const [selectHeader, setSelectHeader] = useState();
+  const [selectHeader, setSelectHeader] = useState("home");
+  const [selectHeart, setSelectHeart] = useState();
+  const [selectProfile, setSelectProfile] = useState();
+  const [beforeChange, setBeforeChange] = useState("");
   const { data } = useUser();
   const {
     register,
@@ -208,25 +218,64 @@ function Header() {
 
   const setSelectHeaderNone = () => {
     setSelectHeader("");
+    setSelectHeart("");
+    setSelectProfile("");
   };
 
-  const selectHeaderState = (header) => {
-    if (selectHeader === "heart") {
-      setSelectHeader("");
+  const selectHeaderHeart = (header) => {
+    if (selectHeart === "heart") {
+      setSelectHeart("");
+      setSelectHeader(beforeChange);
     } else {
-      setSelectHeader("heart");
+      if (selectProfile === "profile") {
+        setSelectProfile("");
+        setSelectHeart("heart");
+      } else {
+        setSelectHeart("heart");
+        setBeforeChange(selectHeader);
+        setSelectHeader("");
+      }
     }
   };
 
-  const selectHeaderProfile = (profile) => {
-    if (selectHeader === "profile") {
-      setSelectHeader("");
+  const selectHeaderHome = () => {
+    if (selectHeader === "home") {
     } else {
-      setSelectHeader("profile");
+      setSelectHeader("home");
+      setSelectHeart("");
+      setSelectProfile("");
     }
   };
 
-  // console.log(selectHeader);
+  const selectHeaderProfile = () => {
+    if (selectProfile === "profile") {
+      setSelectProfile("");
+      setSelectHeader(beforeChange);
+    } else {
+      if (selectHeart === "heart") {
+        setSelectHeart("");
+        setSelectProfile("profile");
+      } else {
+        setSelectProfile("profile");
+        setBeforeChange(selectHeader);
+        setSelectHeader("");
+      }
+    }
+  };
+
+  const selectHeaderExplore = () => {
+    if (selectHeader === "explore") {
+    } else {
+      setSelectHeader("explore");
+    }
+  };
+
+  const selectHeaderMessage = () => {
+    if (selectHeader === "message") {
+    } else {
+      setSelectHeader("message");
+    }
+  };
 
   const handleChange = (event) => {
     setValue("searchWord", event.target.value);
@@ -235,7 +284,7 @@ function Header() {
     <SHeader>
       <Wrapper>
         <Column>
-          <Link to={"/"} onClick={() => setSelectHeaderNone()}>
+          <Link to={"/"} onClick={() => selectHeaderHome()}>
             <LetterImg src={letter} />
           </Link>
         </Column>
@@ -265,28 +314,73 @@ function Header() {
         <Column>
           {isLoggedIn ? (
             <IconsContainer>
-              <Link to={"/"} onClick={() => setSelectHeaderNone()}>
+              <Link to={"/"}>
                 <Icon>
-                  <FontAwesomeIcon icon={faHome} size="lg" />
+                  {selectHeader === "home" ? (
+                    <FontAwesomeIcon
+                      icon={faCalendarSolid}
+                      size="lg"
+                      onClick={() => selectHeaderHome()}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      size="lg"
+                      onClick={() => selectHeaderHome()}
+                    />
+                  )}
                 </Icon>
               </Link>
-              <Link to={"/messageRooms"} onClick={() => setSelectHeaderNone()}>
+
+              <Link to={"/messageRooms"}>
                 <Icon>
-                  <FontAwesomeIcon icon={faPaperPlane} size="lg" />
+                  {selectHeader === "message" ? (
+                    <FontAwesomeIcon
+                      icon={faPaperPlaneSolid}
+                      size="lg"
+                      onClick={() => selectHeaderMessage()}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      size="lg"
+                      onClick={() => selectHeaderMessage()}
+                    />
+                  )}
                 </Icon>{" "}
               </Link>
-              <Link to={"/explore"} onClick={() => setSelectHeaderNone()}>
+              <Link to={"/explore"}>
                 <Icon>
-                  <FontAwesomeIcon icon={faCompass} size="lg" />
+                  {selectHeader === "explore" ? (
+                    <FontAwesomeIcon
+                      icon={faCompassSolid}
+                      size="lg"
+                      onClick={() => selectHeaderExplore()}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faCompass}
+                      size="lg"
+                      onClick={() => selectHeaderExplore()}
+                    />
+                  )}
                 </Icon>
               </Link>
               <Link>
                 <Icon>
-                  <FontAwesomeIcon
-                    onClick={() => selectHeaderState("heart")}
-                    icon={faHeart}
-                    size="lg"
-                  />
+                  {selectHeart === "heart" ? (
+                    <FontAwesomeIcon
+                      onClick={() => selectHeaderHeart("heart")}
+                      icon={faHeartSolid}
+                      size="lg"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      onClick={() => selectHeaderHeart("heart")}
+                      icon={faHeart}
+                      size="lg"
+                    />
+                  )}
                 </Icon>
               </Link>
               <Icon>
@@ -304,7 +398,7 @@ function Header() {
             </Link>
           )}
         </Column>
-        {selectHeader === "heart" ? (
+        {selectHeart === "heart" ? (
           <NotificationBox>
             <Line></Line>
             <Notification>
@@ -312,7 +406,7 @@ function Header() {
             </Notification>
           </NotificationBox>
         ) : null}
-        {selectHeader === "profile" ? (
+        {selectProfile === "profile" ? (
           <ProfileNotificationBox>
             <ProfileLine></ProfileLine>
             <ProfileNotification>

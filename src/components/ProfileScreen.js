@@ -105,7 +105,7 @@ function ProfileScreen({ setSelectHeaderNone, me }) {
         <Link onClick={() => goToProfile()}>
           <Icon>
             <FontAwesomeIcon
-              onClick={() => setSelectHeaderNone("heart")}
+              onClick={() => setSelectHeaderNone()}
               icon={faUserCircle}
               size="lg"
             />
@@ -117,7 +117,7 @@ function ProfileScreen({ setSelectHeaderNone, me }) {
         <Link onClick={() => goToUploadPhoto()}>
           <UploadIcon>
             <FontAwesomeIcon
-              onClick={() => setSelectHeaderNone("heart")}
+              onClick={() => setSelectHeaderNone()}
               icon={faUpload}
               size="lg"
             />
