@@ -198,3 +198,6 @@ export default Login; <-위에랑 이거는 똑같은 형식임
 
 35. 스크롤바
     npm install react-custom-scrollbars --save
+
+36. npm install subscriptions-transport-ws
+    실시간 체크를 위한 웹소켓 npm

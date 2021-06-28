@@ -549,8 +549,14 @@ function Profile() {
           <Row>
             <BioBox>{data?.seeProfile?.bio}</BioBox>
           </Row>
-          <LogoutBtn onClick={Logout}>Log out</LogoutBtn>
-          <LogoutBtn onClick={() => uploadPhotoBtn()}>Upload Photo</LogoutBtn>
+          {data?.seeProfile?.isMe && (
+            <div>
+              <LogoutBtn onClick={Logout}>Log out</LogoutBtn>
+              <LogoutBtn onClick={() => uploadPhotoBtn()}>
+                Upload Photo
+              </LogoutBtn>
+            </div>
+          )}
         </Column>
       </Header>
       <LineU />

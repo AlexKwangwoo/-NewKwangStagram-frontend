@@ -26,6 +26,7 @@
     "sanitize-html": "^2.3.3",
     "styled-components": "^5.2.3",
     "styled-reset": "^4.3.4",
+    "subscriptions-transport-ws": "^0.9.19",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

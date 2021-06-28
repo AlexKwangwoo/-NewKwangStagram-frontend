@@ -3,9 +3,12 @@ import {
   createHttpLink,
   InMemoryCache,
   makeVar,
+  split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { getMainDefinition } from "@apollo/client/utilities";
 import { createUploadLink } from "apollo-upload-client";
+import { WebSocketLink } from "@apollo/client/link/ws";
 
 const TOKEN = "TOKEN";
 const DARK_MODE = "DARK_MODE";
@@ -52,6 +55,25 @@ const httpLink = createHttpLink({
       : "http://localhost:4000/graphql",
 });
 
+const wsLink = new WebSocketLink({
+  // uri:
+  //   "ws://192.168.1.68:4000/graphql" ||
+  //   "ws://newkwangstagram-backend.herokuapp.com/graphql",
+
+  uri: "ws://localhost:4000/graphql",
+  // process.env.NODE_ENV === "production"
+  //   ? "ws://newkwangstagram-backend.herokuapp.com/graphql"
+  //   : "ws://localhost:4000/graphql",
+
+  options: {
+    reconnect: true,
+    connectionParams: {
+      //connectionParams을 통해 webSocket의 context에 토큰을 실어 보낼수있음..딱한번만보내고 계속저장됨
+      token: localStorage.getItem(TOKEN),
+    },
+  },
+});
+
 //http req 헤더에 토큰을 보내기위한 작업을 해줘야한다!
 //doc에 적혀있음 이렇게 해라고
 const authLink = setContext((_, { headers }) => {
@@ -63,8 +85,23 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const splitLink = split(
+  //언제 웹소캣 쓸지 언제 http 링크쓸지 알아야함!
+
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    console.log("definition", definition);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  }, //여기가 맞다면 웹소캣을 반환함.. 아니면 http반환!
+  wsLink,
+  authLink.concat(uploadHttpLink)
+);
+
 export const client = new ApolloClient({
-  link: authLink.concat(uploadHttpLink),
+  link: splitLink,
   cache: new InMemoryCache({
     //이렇게 추가해줘야 캐쉬에 seeProfile할떄 id가 없어도 자동으로 저장해준다!
     //id가 적힌 어느곳이던 User관련된곳에서만 정보를 가져온다. 예를들어 useUser에서
