@@ -84,6 +84,7 @@ function Comments({
         },
       }; //6가지 똑같이 적어줌..inspect의 apollo 캐쉬랑
 
+      // console.log("코맨트여기오나?");
       const newCacheComment = cache.writeFragment({
         //newCacheComment console.log하면 __ref:comment10 이렇게나옴
         data: newComment,
@@ -139,6 +140,7 @@ function Comments({
     if (loading) {
       return;
     }
+    // console.log("코맨트여기는오지1");
     createCommentMutation({
       variables: {
         photoId,

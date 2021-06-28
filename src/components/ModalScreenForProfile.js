@@ -18,6 +18,7 @@ import {
 import { useForm } from "react-hook-form";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
+import useUser from "../hooks/useUser";
 
 // import { formatDate } from "../utils";
 
@@ -266,7 +267,7 @@ const ModalScreenForProfile = ({
 }) => {
   const { register, handleSubmit, setValue, getValues } = useForm();
   const [newComments, setNewComments] = useState([]);
-
+  const { data: userData } = useUser();
   // console.log("comments", comments);
   useEffect(() => {
     setNewComments([]);
@@ -294,10 +295,11 @@ const ModalScreenForProfile = ({
         isMine: true,
         payload,
         user: {
-          ...user,
+          ...userData.me,
         },
       }; //6가지 똑같이 적어줌..inspect의 apollo 캐쉬랑
       // console.log("추가되었는지newComment상태", newComment);
+      // console.log("코맨트여기오나? 모달안");
       const prevComments = newComments;
       setNewComments([...prevComments, newComment]);
       // console.log("추가되었는지comments상태", comments);
@@ -356,6 +358,7 @@ const ModalScreenForProfile = ({
     if (loading) {
       return;
     }
+    // console.log("코맨트여기는오지1모달안");
     createCommentMutation({
       variables: {
         photoId,

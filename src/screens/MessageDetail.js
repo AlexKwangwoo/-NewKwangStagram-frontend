@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useUser from "../hooks/useUser";
 import { faEdit, faInfoCircle, faPen } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "../utils";
@@ -114,11 +114,13 @@ const RightBottom = styled.div`
   padding-top: 2px;
   padding-bottom: 2px;
   height: calc(100% - 160px);
+  overflow-x: hidden;
   /* background-color: blue; */
 `;
 
 const RightInput = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100px;
@@ -254,10 +256,31 @@ const RoomLetter = styled.div`
   margin-bottom: 15px;
 `;
 
+const ScrollBottom = styled.div`
+  width: 0;
+  height: 0;
+  overflow-y: hidden;
+  overflow-x: hidden;
+`;
+
+const ScrollContainer = styled.div`
+  /* background-color: red; */
+  overflow-x: hidden;
+`;
+
+const ScrollbarRemover = styled.div`
+  z-index: 10;
+  margin-top: -56px;
+  width: 100%;
+  height: 40px;
+  background-color: white;
+`;
+
 const renderThumb = ({ style, ...props }) => {
   const thumbStyle = {
     borderRadius: 6,
     backgroundColor: "rgba(35, 49, 86, 0.8)",
+    overflowX: "hidden",
   };
   return <div style={{ ...style, ...thumbStyle }} {...props} />;
 };
@@ -296,6 +319,14 @@ function MessageDetail({
     variables: { id: room?.id },
   });
   // console.log("seeroomquery", seeRoomQuery);
+  const messagesEndRef = React.createRef();
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [seeRoomQuery]);
 
   const updateQuery = (prevQuery, options) => {
     //prevQuery는 필요없음.. 이전꺼 안중요..미래에올 데이터가 중요!
@@ -447,32 +478,36 @@ function MessageDetail({
               autoHideTimeout={500}
               autoHideDuration={200}
             >
-              {seeRoomQuery?.seeRoom?.messages.map((message) => (
-                <div key={message.id}>
-                  {message?.user?.username !== userData?.me?.username ? (
-                    <EachMessageContainer>
-                      <CircleAvatar src={message.user.avatar} />
-                      <MessagePayLoadLeft>
-                        <MessagePayLoadLeftLetter>
-                          {message.payload}
-                        </MessagePayLoadLeftLetter>
-                      </MessagePayLoadLeft>
-                    </EachMessageContainer>
-                  ) : (
-                    <EachMessageContainer>
-                      <MessagePayLoadRight>
-                        <MessagePayLoadLeftLetter>
-                          {message.payload}
-                        </MessagePayLoadLeftLetter>
-                      </MessagePayLoadRight>
-                      {/* <CircleAvatar src={message.user.avatar} /> */}
-                    </EachMessageContainer>
-                  )}
-                </div>
-              ))}
+              <ScrollContainer>
+                {seeRoomQuery?.seeRoom?.messages.map((message) => (
+                  <div key={message.id}>
+                    {message?.user?.username !== userData?.me?.username ? (
+                      <EachMessageContainer>
+                        <CircleAvatar src={message.user.avatar} />
+                        <MessagePayLoadLeft>
+                          <MessagePayLoadLeftLetter>
+                            {message.payload}
+                          </MessagePayLoadLeftLetter>
+                        </MessagePayLoadLeft>
+                      </EachMessageContainer>
+                    ) : (
+                      <EachMessageContainer>
+                        <MessagePayLoadRight>
+                          <MessagePayLoadLeftLetter>
+                            {message.payload}
+                          </MessagePayLoadLeftLetter>
+                        </MessagePayLoadRight>
+                        {/* <CircleAvatar src={message.user.avatar} /> */}
+                      </EachMessageContainer>
+                    )}
+                    <ScrollBottom ref={messagesEndRef} />
+                  </div>
+                ))}
+              </ScrollContainer>
             </CustomScrollbars>
           </RightBottom>
           <RightInput>
+            <ScrollbarRemover></ScrollbarRemover>
             <form onSubmit={handleSubmit(onValid)}>
               {" "}
               <PostCommentInput
