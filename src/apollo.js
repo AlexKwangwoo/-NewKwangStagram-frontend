@@ -62,7 +62,7 @@ const wsLink = new WebSocketLink({
 
   uri:
     process.env.NODE_ENV === "production"
-      ? "ws://newkwangstagram-backend.herokuapp.com/graphql"
+      ? "wss://newkwangstagram-backend.herokuapp.com/graphql"
       : "ws://localhost:4000/graphql",
   // process.env.NODE_ENV === "production"
   //   ? "ws://newkwangstagram-backend.herokuapp.com/graphql"
