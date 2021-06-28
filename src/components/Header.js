@@ -56,6 +56,7 @@ const Column = styled.div``;
 const Icon = styled.span`
   margin-left: 20px;
   cursor: point;
+  /* background-color: red; */
 `;
 
 const Button = styled.span`
@@ -314,8 +315,8 @@ function Header() {
         <Column>
           {isLoggedIn ? (
             <IconsContainer>
-              <Link to={"/"}>
-                <Icon>
+              <Icon>
+                <Link to={"/"}>
                   {selectHeader === "home" ? (
                     <FontAwesomeIcon
                       icon={faCalendarSolid}
@@ -329,11 +330,11 @@ function Header() {
                       onClick={() => selectHeaderHome()}
                     />
                   )}
-                </Icon>
-              </Link>
+                </Link>
+              </Icon>
 
-              <Link to={"/messageRooms"}>
-                <Icon>
+              <Icon>
+                <Link to={"/messageRooms"}>
                   {selectHeader === "message" ? (
                     <FontAwesomeIcon
                       icon={faPaperPlaneSolid}
@@ -347,10 +348,10 @@ function Header() {
                       onClick={() => selectHeaderMessage()}
                     />
                   )}
-                </Icon>{" "}
-              </Link>
-              <Link to={"/explore"}>
-                <Icon>
+                </Link>
+              </Icon>
+              <Icon>
+                <Link to={"/explore"}>
                   {selectHeader === "explore" ? (
                     <FontAwesomeIcon
                       icon={faCompassSolid}
@@ -364,10 +365,10 @@ function Header() {
                       onClick={() => selectHeaderExplore()}
                     />
                   )}
-                </Icon>
-              </Link>
-              <Link>
-                <Icon>
+                </Link>
+              </Icon>
+              <Icon>
+                <Link>
                   {selectHeart === "heart" ? (
                     <FontAwesomeIcon
                       onClick={() => selectHeaderHeart("heart")}
@@ -381,8 +382,8 @@ function Header() {
                       size="lg"
                     />
                   )}
-                </Icon>
-              </Link>
+                </Link>
+              </Icon>
               <Icon>
                 {/* <Link to={`/users/${data?.me?.username}`}>
                   <Avatar url={data?.me?.avatar} />
