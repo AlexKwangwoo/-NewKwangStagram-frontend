@@ -295,16 +295,16 @@ function MessageDetail({
   } = useQuery(SEE_ROOM_QUERY, {
     variables: { id: room?.id },
   });
-  console.log("seeroomquery", seeRoomQuery);
+  // console.log("seeroomquery", seeRoomQuery);
 
   const updateQuery = (prevQuery, options) => {
     //prevQuery는 필요없음.. 이전꺼 안중요..미래에올 데이터가 중요!
-    console.log("업뎃되나?");
+    // console.log("업뎃되나?");
     refetch();
   };
 
   useEffect(() => {
-    console.log("서브스크립션 발동");
+    // console.log("서브스크립션 발동");
     if (seeRoomQuery?.seeRoom) {
       // console.log("메시지방 데이터", data.seeRoom);
       // 그방에 들어갈때만 데이터를 가져옴!

@@ -360,7 +360,7 @@ function MessageRooms() {
   }, [data]);
 
   // console.log("allUserFound", allUserFound);
-  console.log("SEE_ROOMS_QUERY", data);
+  // console.log("SEE_ROOMS_QUERY", data);
 
   const selectMessageRoom = (room) => {
     setMessageRoom(room);

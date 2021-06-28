@@ -60,7 +60,10 @@ const wsLink = new WebSocketLink({
   //   "ws://192.168.1.68:4000/graphql" ||
   //   "ws://newkwangstagram-backend.herokuapp.com/graphql",
 
-  uri: "ws://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://newkwangstagram-backend.herokuapp.com/graphql"
+      : "http://localhost:4000/graphql",
   // process.env.NODE_ENV === "production"
   //   ? "ws://newkwangstagram-backend.herokuapp.com/graphql"
   //   : "ws://localhost:4000/graphql",
@@ -90,7 +93,7 @@ const splitLink = split(
 
   ({ query }) => {
     const definition = getMainDefinition(query);
-    console.log("definition", definition);
+    // console.log("definition", definition);
     return (
       definition.kind === "OperationDefinition" &&
       definition.operation === "subscription"
