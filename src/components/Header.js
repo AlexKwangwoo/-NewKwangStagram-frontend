@@ -140,7 +140,8 @@ const NotificationBox = styled.div`
   height: 300px;
   animation-name: ${(props) =>
     props.selectHeart === "heart" ? fadeIn : fadeOut};
-  animation-duration: 300ms;
+  animation-duration: ${(props) =>
+    props.firstRending === false ? "300ms" : "0"};
   animation-fill-mode: forwards;
 `;
 /* animation-name: ${(props) =>
@@ -182,8 +183,11 @@ const ProfileNotificationBox = styled.div`
   width: 170px;
   height: 100px;
   animation-name: ${(props) =>
-    props.selectProfile === "profile" ? fadeIn : fadeOut};
-  animation-duration: 300ms;
+    props.selectProfile === "profile" && props.firstRending === false
+      ? fadeIn
+      : fadeOut};
+  animation-duration: ${(props) =>
+    props.firstRending === false ? "300ms" : "0"};
   animation-fill-mode: forwards;
   /* background-color: yellow; */
 `;
@@ -222,6 +226,7 @@ function Header() {
   const [selectHeart, setSelectHeart] = useState();
   const [selectProfile, setSelectProfile] = useState();
   const [beforeChange, setBeforeChange] = useState("");
+  const [firstRending, setFirstRending] = useState(true);
   const { data } = useUser();
   const {
     register,
@@ -234,7 +239,7 @@ function Header() {
   } = useForm({
     mode: "onChange",
   });
-
+  // console.log("firstRending", firstRending);
   const onSubmitValid = (data) => {
     const { searchWord } = getValues();
     // console.log("data", data);
@@ -258,6 +263,7 @@ function Header() {
   };
 
   const selectHeaderHeart = (header) => {
+    setFirstRending(false);
     if (selectHeart === "heart") {
       setSelectHeart("");
       setSelectHeader(beforeChange);
@@ -283,6 +289,7 @@ function Header() {
   };
 
   const selectHeaderProfile = () => {
+    setFirstRending(false);
     if (selectProfile === "profile") {
       setSelectProfile("");
       setSelectHeader(beforeChange);
@@ -445,7 +452,7 @@ function Header() {
             </Notification>
           </NotificationBox>
         ) : null} */}
-        <NotificationBox selectHeart={selectHeart}>
+        <NotificationBox firstRending={firstRending} selectHeart={selectHeart}>
           <Line></Line>
           <Notification>
             <NotificationScreen setSelectHeaderNone={setSelectHeaderNone} />
@@ -462,7 +469,10 @@ function Header() {
             </ProfileNotification>
           </ProfileNotificationBox>
         ) : null} */}
-        <ProfileNotificationBox selectProfile={selectProfile}>
+        <ProfileNotificationBox
+          firstRending={firstRending}
+          selectProfile={selectProfile}
+        >
           <ProfileLine></ProfileLine>
           <ProfileNotification>
             <ProfileScreen
