@@ -14,7 +14,7 @@ import {
   faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { isLoggedInVar } from "../apollo";
 import { Link, useHistory, useParams } from "react-router-dom";
 import useUser from "../hooks/useUser";
@@ -111,13 +111,29 @@ const IconSearch = styled.div`
   color: #aaacaf;
 `;
 
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+  
+`;
+
 const NotificationBox = styled.div`
   position: absolute;
   top: 28px;
   right: 0;
   width: 500px;
   height: 300px;
+  animation: 0.3s ${fadeIn} ease-out;
 `;
+/* animation-name: ${(props) =>
+    props.selectProfile === "heart" ? fadeOut : fadeIn};
+  animation-name: ${fadeIn};
+  animation-duration: 500ms;
+  animation-fill-mode: forwards; */
 
 const Line = styled.div`
   width: 10px;
@@ -151,6 +167,7 @@ const ProfileNotificationBox = styled.div`
   right: 0;
   width: 170px;
   height: 100px;
+  animation: 0.3s ${fadeIn} ease-out;
   /* background-color: yellow; */
 `;
 
