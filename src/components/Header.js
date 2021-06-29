@@ -268,6 +268,8 @@ function Header() {
     if (selectHeader === "explore") {
     } else {
       setSelectHeader("explore");
+      setSelectHeart("");
+      setSelectProfile("");
     }
   };
 
@@ -275,6 +277,8 @@ function Header() {
     if (selectHeader === "message") {
     } else {
       setSelectHeader("message");
+      setSelectHeart("");
+      setSelectProfile("");
     }
   };
 
