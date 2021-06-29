@@ -3,9 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import React, { useState, useEffect, useRef } from "react";
 import useUser from "../hooks/useUser";
-import { faEdit, faInfoCircle, faPen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faPen,
+  faQuestionCircle as faQuestionCircleSolid,
+} from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "../utils";
-import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
+import {
+  faPaperPlane,
+  faInfoCircle,
+  faQuestionCircle,
+} from "@fortawesome/free-regular-svg-icons";
 import Button2 from "../components/auth/Button2";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useForm } from "react-hook-form";
@@ -182,6 +190,7 @@ const DetailTitle = styled.div`
 const SendButton = styled.div``;
 
 const MembersContainer = styled.div`
+  padding-bottom: 20px;
   /* background-color: red; */
 `;
 
@@ -397,7 +406,7 @@ function MessageDetail({
           <RightTop>
             <DetailTitle>Details</DetailTitle>
             <Icon onClick={() => clickDetailRemove()}>
-              <FontAwesomeIcon icon={faInfoCircle} size="lg" />
+              <FontAwesomeIcon icon={faQuestionCircleSolid} size="lg" />
             </Icon>
           </RightTop>
           <RightBottom>
@@ -460,13 +469,13 @@ function MessageDetail({
               <Icon
                 onClick={() => clickDetail(seeRoomQuery?.seeRoom?.users[1])}
               >
-                <FontAwesomeIcon icon={faInfoCircle} size="lg" />
+                <FontAwesomeIcon icon={faQuestionCircle} size="lg" />
               </Icon>
             ) : (
               <Icon
                 onClick={() => clickDetail(seeRoomQuery?.seeRoom?.users[0])}
               >
-                <FontAwesomeIcon icon={faInfoCircle} size="lg" />
+                <FontAwesomeIcon icon={faQuestionCircle} size="lg" />
               </Icon>
             )}
           </RightTop>

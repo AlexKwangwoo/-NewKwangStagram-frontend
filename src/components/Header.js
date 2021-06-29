@@ -114,6 +114,7 @@ const IconSearch = styled.div`
 const fadeIn = keyframes`
   0% {
     opacity: 0;
+    visibility: hidden;
   }
   100% {
     opacity: 1;
@@ -127,6 +128,7 @@ const fadeOut = keyframes`
   }
   100% {
     opacity: 0;
+    visibility: hidden;
   }
 `;
 
