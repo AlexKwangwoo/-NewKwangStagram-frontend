@@ -121,13 +121,25 @@ const fadeIn = keyframes`
   
 `;
 
+const fadeOut = keyframes`
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+`;
+
 const NotificationBox = styled.div`
   position: absolute;
   top: 28px;
   right: 0;
   width: 500px;
   height: 300px;
-  animation: 0.3s ${fadeIn} ease-out;
+  animation-name: ${(props) =>
+    props.selectHeart === "heart" ? fadeIn : fadeOut};
+  animation-duration: 300ms;
+  animation-fill-mode: forwards;
 `;
 /* animation-name: ${(props) =>
     props.selectProfile === "heart" ? fadeOut : fadeIn};
@@ -167,7 +179,10 @@ const ProfileNotificationBox = styled.div`
   right: 0;
   width: 170px;
   height: 100px;
-  animation: 0.3s ${fadeIn} ease-out;
+  animation-name: ${(props) =>
+    props.selectProfile === "profile" ? fadeIn : fadeOut};
+  animation-duration: 300ms;
+  animation-fill-mode: forwards;
   /* background-color: yellow; */
 `;
 
@@ -420,16 +435,22 @@ function Header() {
             </Link>
           )}
         </Column>
-        {selectHeart === "heart" ? (
-          <NotificationBox>
+        {/* {selectHeart === "heart" ? (
+          <NotificationBox selectHeart={selectHeart}>
             <Line></Line>
             <Notification>
               <NotificationScreen setSelectHeaderNone={setSelectHeaderNone} />
             </Notification>
           </NotificationBox>
-        ) : null}
-        {selectProfile === "profile" ? (
-          <ProfileNotificationBox>
+        ) : null} */}
+        <NotificationBox selectHeart={selectHeart}>
+          <Line></Line>
+          <Notification>
+            <NotificationScreen setSelectHeaderNone={setSelectHeaderNone} />
+          </Notification>
+        </NotificationBox>
+        {/* {selectProfile === "profile" ? (
+          <ProfileNotificationBox selectProfile={selectProfile}>
             <ProfileLine></ProfileLine>
             <ProfileNotification>
               <ProfileScreen
@@ -438,7 +459,16 @@ function Header() {
               />
             </ProfileNotification>
           </ProfileNotificationBox>
-        ) : null}
+        ) : null} */}
+        <ProfileNotificationBox selectProfile={selectProfile}>
+          <ProfileLine></ProfileLine>
+          <ProfileNotification>
+            <ProfileScreen
+              me={data?.me?.username}
+              setSelectHeaderNone={setSelectHeaderNone}
+            />
+          </ProfileNotification>
+        </ProfileNotificationBox>
       </Wrapper>
     </SHeader>
   );
